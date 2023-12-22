@@ -4,7 +4,7 @@ CREATE TABLE public.imported_documents (
 	xml             XML NOT NULL,
 	created_on      TIMESTAMP NOT NULL DEFAULT NOW(),
 	updated_on      TIMESTAMP NOT NULL DEFAULT NOW(),
-    deleted_on      TIMESTAMP NOT NULL DEFAULT NOW()
+  deleted_on      TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
 CREATE TABLE public.converted_documents (
@@ -15,3 +15,5 @@ CREATE TABLE public.converted_documents (
 	created_on      TIMESTAMP NOT NULL DEFAULT NOW(),
 	updated_on      TIMESTAMP NOT NULL DEFAULT NOW()
 );
+
+CREATE UNIQUE INDEX document_filename ON imported_documents (file_name) WHERE deleted_on IS NULL;

@@ -1,11 +1,16 @@
 import csv
 import xml.dom.minidom as md
 import xml.etree.ElementTree as ET
+from lxml import etree
 
 from utils.reader import CSVReader
-from entities.country import Country
-from entities.team import Team
-from entities.player import Player
+from daemon.importer.entities.brand import Brand
+from daemon.importer.entities.car_model import CarModel
+from daemon.importer.entities.car import Car
+from daemon.importer.entities.card import CreditCard
+from daemon.importer.entities.country import Country
+from daemon.importer.entities.customer import Customer
+from daemon.importer.entities.sales import Sale
 
 
 class CSVtoXMLConverter:
@@ -14,52 +19,110 @@ class CSVtoXMLConverter:
         self._reader = CSVReader(path)
 
     def to_xml(self):
-        # read countries
-        countries = self._reader.read_entities(
-            attr="nationality",
-            builder=lambda row: Country(row["nationality"])
-        )
+        countries = {}
+        brands = {}
+        car_models = {}
+        credit_cards = {}
+        sales = []
 
-        # read top_teams
-        teams = self._reader.read_entities(
-            attr="Current Club",
-            builder=lambda row: Team(row["Current Club"])
-        )
+        for row in self._reader.loop():
+            # Processar e armazenar países
+            country_name = row["Country"]
+            if country_name not in countries:
+                countries[country_name] = Country(country_name)
 
-        # read players
+            # Processar e armazenar marcas
+            brand_name = row["Car Brand"]
+            if brand_name not in brands:
+                brands[brand_name] = Brand(brand_name)
 
-        def after_creating_player(player, row):
-            # add the player to the appropriate team
-            teams[row["Current Club"]].add_player(player)
+            # Processar e armazenar modelos de carros
+            model_name = row["Car Model"]
+            model_key = (brand_name, model_name)
+            if model_key not in car_models:
+                brand = brands[brand_name]
+                model = CarModel(model_name, brand)
+                car_models[model_key] = model
+                brand.add_model(model)
 
-        self._reader.read_entities(
-            attr="full_name",
-            builder=lambda row: Player(
-                name=row["full_name"],
-                age=row["age"],
-                country=countries[row["nationality"]]
-            ),
-            after_create=after_creating_player
-        )
+            # Processar e armazenar tipos de cartões de crédito
+            credit_card_type = row["Credit Card Type"]
+            if credit_card_type not in credit_cards:
+                credit_cards[credit_card_type] = CreditCard(credit_card_type)
 
-        # generate the final xml
-        root_el = ET.Element("Football")
+            # Criação e armazenamento de vendas
+            country = countries[country_name]
+            customer = Customer(row["First Name"], row["Last Name"], country)
+            model = car_models[model_key]
+            car = Car(model, row["Car Color"], row["Year of Manufacture"], model._brand._id, model._id)
+            sale = Sale()
+            sale.add_customer(customer)
+            sale.add_car(car)
+            sale.add_creditCard(credit_cards[credit_card_type])
+            sales.append(sale)
 
-        teams_el = ET.Element("Teams")
-        for team in teams.values():
-            teams_el.append(team.to_xml())
 
-        countries_el = ET.Element("Countries")
+        # Geração do XML
+        dealership_el = etree.Element("Dealership")
+
+        # Seção de vendas
+        sales_el = etree.SubElement(dealership_el, "sales") 
+        for sale in sales:
+            sales_el.append(sale.to_xml_lxml())
+
+        # Seção de países
+        countries_el = etree.SubElement(dealership_el, "Countries")
         for country in countries.values():
-            countries_el.append(country.to_xml())
+            countries_el.append(country.to_xml_lxml())
 
-        root_el.append(teams_el)
-        root_el.append(countries_el)
+        # Seção de marcas
+        brands_el = etree.SubElement(dealership_el, "Brands")
+        for brand in brands.values():
+            brands_el.append(brand.to_xml_lxml())
 
-        return root_el
+        # Seção de tipos de cartões de crédito
+        card_types_el = etree.SubElement(dealership_el, "CardTypes")
+        for card_type, card in credit_cards.items():
+            card_types_el.append(card.to_xml_lxml())
 
-    def to_xml_str(self):
-        xml_str = ET.tostring(self.to_xml(), encoding='utf8', method='xml').decode()
-        dom = md.parseString(xml_str)
-        return dom.toprettyxml()
+        return dealership_el
 
+    def to_xml_str(self, file_path, xsd_path=None):
+        xml_tree = self.to_xml()
+       
+        if xsd_path:
+            xml_str = etree.tostring(xml_tree, pretty_print=True, encoding='utf-8').decode('utf-8')
+            try:
+                if self.validate_xml_with_xsd(xml_str, xsd_path):
+                    with open(file_path, 'wb') as file:
+                        file.write(etree.tostring(xml_tree, pretty_print=True, encoding='utf-8'))
+
+                    success_message = f"Validação bem sucedida! O arquivo '{file_path}' foi criado com sucesso."
+                    print(success_message)
+                    return xml_str
+                else:
+                    error_message = "A validação falhou. O XML não será gerado."
+                    print(error_message)
+                    return None, error_message
+            except etree.DocumentInvalid as e:
+                error_message = f"Erro de validação: {e}"
+                print(error_message)
+                return None
+        else:
+            xml_str = etree.tostring(xml_tree, pretty_print=True, encoding='utf-8').decode('utf-8')
+            return xml_str, None
+
+    def validate_xml_with_xsd(self, xml_str, xsd_path):
+        try:
+            xsd_tree = etree.parse(xsd_path)
+            schema = etree.XMLSchema(xsd_tree)
+
+            xml_doc = etree.fromstring(xml_str)
+
+            schema.assertValid(xml_doc)
+            
+            print("A validação foi bem-sucedida!")
+            return True
+        except etree.DocumentInvalid as e:
+            print(f"Erro de validação: {e}")
+            return False

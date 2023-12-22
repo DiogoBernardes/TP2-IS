@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <!-- Definição do Elemento Raiz -->
+  <xs:element name="Dealership">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="sales" type="SalesType"/>
+        <xs:element name="Countries" type="CountriesType"/>
+        <xs:element name="Brands" type="BrandsType"/>
+        <xs:element name="CardTypes" type="CardTypesType"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <!-- Definição do Tipo Sales -->
+  <xs:complexType name="SalesType">
+    <xs:sequence>
+      <xs:element name="Sale" type="SaleType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- Definição do Tipo Sale -->
+  <xs:complexType name="SaleType">
+    <xs:sequence>
+      <xs:element name="Car" type="CarType"/>
+      <xs:element name="Customer" type="CustomerType"/>
+      <xs:element name="CreditCard_Type" type="CreditCardType"/>
+    </xs:sequence>
+    <xs:attribute name="id" type="xs:integer" use="required"/>
+  </xs:complexType>
+
+  <!-- Definição do Tipo Car -->
+  <xs:complexType name="CarType">
+    <xs:attribute name="id" type="xs:integer" use="required"/>
+    <xs:attribute name="color" type="xs:string" use="required"/>
+    <xs:attribute name="year" type="xs:integer" use="required"/>
+    <xs:attribute name="brand_ref" type="xs:integer" use="required"/>
+    <xs:attribute name="model_ref" type="xs:integer" use="required"/>
+  </xs:complexType>
+
+  <!-- Definição do Tipo Customer -->
+  <xs:complexType name="CustomerType">
+    <xs:attribute name="id" type="xs:integer" use="required"/>
+    <xs:attribute name="first_name" type="xs:string" use="required"/>
+    <xs:attribute name="last_name" type="xs:string" use="required"/>
+    <xs:attribute name="country_ref" type="xs:integer" use="required"/>
+  </xs:complexType>
+
+  <!-- Definição do Tipo CreditCard -->
+  <xs:complexType name="CreditCardType">
+    <xs:attribute name="id" type="xs:integer" use="required"/>
+    <xs:attribute name="name" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <!-- Definição do Tipo Countries -->
+  <xs:complexType name="CountriesType">
+    <xs:sequence>
+      <xs:element name="Country" type="CountryType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- Definição do Tipo Country -->
+  <xs:complexType name="CountryType">
+    <xs:attribute name="id" type="xs:integer" use="required"/>
+    <xs:attribute name="name" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <!-- Definição do Tipo Brands -->
+  <xs:complexType name="BrandsType">
+    <xs:sequence>
+      <xs:element name="Brand" type="BrandType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- Definição do Tipo Brand -->
+  <xs:complexType name="BrandType">
+    <xs:sequence>
+      <xs:element name="Models" type="ModelsType"/>
+    </xs:sequence>
+    <xs:attribute name="id" type="xs:integer" use="required"/>
+    <xs:attribute name="name" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <!-- Definição do Tipo Models -->
+  <xs:complexType name="ModelsType">
+    <xs:sequence>
+      <xs:element name="Model" type="ModelType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- Definição do Tipo Model -->
+  <xs:complexType name="ModelType">
+    <xs:attribute name="id" type="xs:integer" use="required"/>
+    <xs:attribute name="name" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <!-- Definição do Tipo CardTypes -->
+  <xs:complexType name="CardTypesType">
+    <xs:sequence>
+      <xs:element name="CreditCard_Type" type="CreditCardType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+</xs:schema>
