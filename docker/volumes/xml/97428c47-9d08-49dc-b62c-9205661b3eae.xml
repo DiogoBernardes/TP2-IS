@@ -1,0 +1,723 @@
+<?xml version="1.0" ?>
+<Football>
+	<Teams>
+		<Team id="1" name="West Ham United">
+			<Players>
+				<Player id="1" name="Aaron Cresswell" age="32" country_ref="1"/>
+				<Player id="18" name="Adrián San Miguel del Castillo" age="35" country_ref="8"/>
+				<Player id="30" name="Alexandre Nascimento Costa Silva" age="25" country_ref="10"/>
+				<Player id="48" name="Andriy Yarmolenko" age="32" country_ref="21"/>
+				<Player id="50" name="Andy Carroll" age="33" country_ref="1"/>
+				<Player id="52" name="Angelo Ogbonna" age="34" country_ref="7"/>
+				<Player id="62" name="Arthur Masuaku" age="28" country_ref="5"/>
+				<Player id="79" name="Benjamin Johnson" age="22" country_ref="1"/>
+				<Player id="100" name="Carlos Sánchez" age="36" country_ref="32"/>
+				<Player id="124" name="Conor Coventry" age="22" country_ref="29"/>
+				<Player id="153" name="Declan Rice" age="23" country_ref="29"/>
+				<Player id="180" name="Fabián Cornelio Balbuena González" age="31" country_ref="46"/>
+				<Player id="187" name="Felipe Anderson Pereira Gomes" age="29" country_ref="16"/>
+				<Player id="209" name="Grady Diangana" age="24" country_ref="1"/>
+				<Player id="232" name="Issa Diop" age="25" country_ref="5"/>
+				<Player id="237" name="Jack Wilshere" age="30" country_ref="1"/>
+				<Player id="256" name="Javier Hernandez" age="34" country_ref="52"/>
+				<Player id="272" name="Joe Powell" age="23" country_ref="1"/>
+				<Player id="349" name="Lucas Perez" age="34" country_ref="8"/>
+				<Player id="361" name="Manuel Lanzini" age="29" country_ref="39"/>
+				<Player id="370" name="Mark Noble" age="35" country_ref="1"/>
+				<Player id="372" name="Marko Arnautović" age="33" country_ref="37"/>
+				<Player id="401" name="Michail Antonio" age="32" country_ref="1"/>
+				<Player id="419" name="Nathan Holland" age="24" country_ref="1"/>
+				<Player id="436" name="Pablo Zabaleta" age="37" country_ref="39"/>
+				<Player id="443" name="Pedro Obiang" age="30" country_ref="64"/>
+				<Player id="468" name="Robert Snodgrass" age="35" country_ref="20"/>
+				<Player id="482" name="Ryan Fredericks" age="29" country_ref="1"/>
+				<Player id="492" name="Samir Nasri" age="35" country_ref="5"/>
+				<Player id="569" name="Łukasz Fabiański" age="37" country_ref="25"/>
+			</Players>
+		</Team>
+		<Team id="2" name="Burnley">
+			<Players>
+				<Player id="2" name="Aaron Lennon" age="35" country_ref="1"/>
+				<Player id="35" name="Ali Koiki" age="22" country_ref="1"/>
+				<Player id="54" name="Anthony Driscoll-Glennon" age="22" country_ref="1"/>
+				<Player id="64" name="Ashley Barnes" age="32" country_ref="1"/>
+				<Player id="65" name="Ashley Westwood" age="32" country_ref="1"/>
+				<Player id="74" name="Ben Gibson" age="29" country_ref="1"/>
+				<Player id="76" name="Ben Mee" age="32" country_ref="1"/>
+				<Player id="107" name="Charlie Taylor" age="28" country_ref="1"/>
+				<Player id="112" name="Chris Wood" age="30" country_ref="34"/>
+				<Player id="166" name="Dwight McNeil" age="22" country_ref="1"/>
+				<Player id="234" name="Jack Cork" age="33" country_ref="1"/>
+				<Player id="246" name="James Tarkowski" age="29" country_ref="1"/>
+				<Player id="261" name="Jeff Hendrick" age="30" country_ref="29"/>
+				<Player id="271" name="Joe Hart" age="35" country_ref="1"/>
+				<Player id="277" name="Johann Berg Guðmunds­son" age="31" country_ref="24"/>
+				<Player id="283" name="Jonathan Walters" age="38" country_ref="29"/>
+				<Player id="298" name="Josh Benson" age="22" country_ref="1"/>
+				<Player id="321" name="Kevin Long" age="32" country_ref="29"/>
+				<Player id="380" name="Matěj Vydra" age="30" country_ref="59"/>
+				<Player id="391" name="Matthew Lowton" age="33" country_ref="1"/>
+				<Player id="445" name="Peter Crouch" age="41" country_ref="1"/>
+				<Player id="447" name="Phil Bardsley" age="37" country_ref="20"/>
+				<Player id="466" name="Robbie Brady" age="30" country_ref="29"/>
+				<Player id="490" name="Sam Vokes" age="32" country_ref="3"/>
+				<Player id="517" name="Stephen Ward" age="37" country_ref="29"/>
+				<Player id="521" name="Steven Defour" age="34" country_ref="36"/>
+				<Player id="535" name="Tom Heaton" age="36" country_ref="1"/>
+			</Players>
+		</Team>
+		<Team id="3" name="Huddersfield Town">
+			<Players>
+				<Player id="3" name="Aaron Mooy" age="31" country_ref="2"/>
+				<Player id="5" name="Aaron Rowe" age="22" country_ref="1"/>
+				<Player id="7" name="Abdelhamid Sabiri" age="25" country_ref="4"/>
+				<Player id="14" name="Adama Diakhaby" age="26" country_ref="5"/>
+				<Player id="26" name="Alex Pritchard" age="29" country_ref="1"/>
+				<Player id="75" name="Ben Hamer" age="34" country_ref="1"/>
+				<Player id="109" name="Chris Löwe" age="33" country_ref="17"/>
+				<Player id="118" name="Christopher Schindler" age="32" country_ref="17"/>
+				<Player id="121" name="Collin Quaner" age="31" country_ref="17"/>
+				<Player id="135" name="Daniel Williams" age="33" country_ref="40"/>
+				<Player id="157" name="Demeaco Duhaney" age="23" country_ref="1"/>
+				<Player id="170" name="Elias Kachunga" age="30" country_ref="44"/>
+				<Player id="176" name="Erik Durm" age="30" country_ref="17"/>
+				<Player id="190" name="Florent Hadergjonaj" age="28" country_ref="47"/>
+				<Player id="231" name="Isaac Mbenza" age="26" country_ref="36"/>
+				<Player id="254" name="Jason Puncheon" age="36" country_ref="1"/>
+				<Player id="274" name="Joel Coleman" age="26" country_ref="1"/>
+				<Player id="280" name="Jon Gorenc Stankovič" age="26" country_ref="53"/>
+				<Player id="281" name="Jonas Lössl" age="33" country_ref="19"/>
+				<Player id="282" name="Jonathan Hogg" age="33" country_ref="1"/>
+				<Player id="306" name="Juninho Bacuna" age="25" country_ref="41"/>
+				<Player id="311" name="Karlan Ahearne-Grant" age="24" country_ref="1"/>
+				<Player id="331" name="Laurent Depoitre" age="33" country_ref="36"/>
+				<Player id="383" name="Mathias Jattah-Njie Jørgensen" age="32" country_ref="19"/>
+				<Player id="392" name="Matty Daly" age="21" country_ref="1"/>
+				<Player id="450" name="Philip Billing" age="26" country_ref="19"/>
+				<Player id="458" name="Rajiv van La Parra" age="31" country_ref="41"/>
+				<Player id="459" name="Ramadan Sobhi" age="25" country_ref="61"/>
+				<Player id="485" name="Ryan Schofield" age="22" country_ref="1"/>
+				<Player id="519" name="Steve Mounié" age="27" country_ref="66"/>
+				<Player id="526" name="Terence Kongolo" age="28" country_ref="41"/>
+				<Player id="536" name="Tom Smith" age="30" country_ref="1"/>
+			</Players>
+		</Team>
+		<Team id="4" name="Arsenal">
+			<Players>
+				<Player id="4" name="Aaron Ramsey" age="31" country_ref="3"/>
+				<Player id="20" name="Ainsley Maitland-Niles" age="25" country_ref="1"/>
+				<Player id="23" name="Alex Iwobi" age="26" country_ref="12"/>
+				<Player id="29" name="Alexandre Lacazette" age="31" country_ref="5"/>
+				<Player id="85" name="Bernd Leno" age="30" country_ref="17"/>
+				<Player id="99" name="Carl Jenkinson" age="30" country_ref="1"/>
+				<Player id="129" name="Damián Emiliano Martínez" age="30" country_ref="39"/>
+				<Player id="141" name="Danny Welbeck" age="31" country_ref="1"/>
+				<Player id="159" name="Denis Suárez" age="28" country_ref="8"/>
+				<Player id="169" name="Edward Nketiah" age="23" country_ref="1"/>
+				<Player id="173" name="Emile Smith Rowe" age="22" country_ref="1"/>
+				<Player id="210" name="Granit Xhaka" age="29" country_ref="47"/>
+				<Player id="220" name="Hector Bellerin" age="27" country_ref="8"/>
+				<Player id="222" name="Henrikh Mkhitaryan" age="33" country_ref="50"/>
+				<Player id="297" name="Joseph Willock" age="23" country_ref="1"/>
+				<Player id="325" name="Konstantinos Mavropanos" age="24" country_ref="54"/>
+				<Player id="332" name="Laurent Koscielny" age="36" country_ref="5"/>
+				<Player id="351" name="Lucas Torreira" age="26" country_ref="57"/>
+				<Player id="389" name="Mattéo Guendouzi Olié" age="23" country_ref="5"/>
+				<Player id="398" name="Mesut Özil" age="33" country_ref="17"/>
+				<Player id="407" name="Mohamed Elneny" age="30" country_ref="61"/>
+				<Player id="416" name="Nacho Monreal" age="36" country_ref="8"/>
+				<Player id="446" name="Petr Čech" age="40" country_ref="59"/>
+				<Player id="453" name="Pierre-Emerick Aubameyang" age="33" country_ref="30"/>
+				<Player id="465" name="Rob Holding" age="26" country_ref="1"/>
+				<Player id="496" name="Sead Kolašinac" age="29" country_ref="26"/>
+				<Player id="508" name="Shkodran Mustafi" age="30" country_ref="17"/>
+				<Player id="511" name="Sokratis Papastathopoulos" age="34" country_ref="54"/>
+				<Player id="516" name="Stephan Lichtsteiner" age="38" country_ref="47"/>
+				<Player id="567" name="Zechariah Medley" age="22" country_ref="1"/>
+			</Players>
+		</Team>
+		<Team id="5" name="Crystal Palace">
+			<Players>
+				<Player id="6" name="Aaron Wan-Bissaka" age="24" country_ref="1"/>
+				<Player id="28" name="Alexander Sørloth" age="26" country_ref="13"/>
+				<Player id="49" name="Andros Townsend" age="31" country_ref="1"/>
+				<Player id="70" name="Bakary Sako" age="34" country_ref="27"/>
+				<Player id="108" name="Cheikhou Kouyaté" age="32" country_ref="33"/>
+				<Player id="114" name="Christian Benteke" age="31" country_ref="36"/>
+				<Player id="122" name="Connor Wickham" age="29" country_ref="1"/>
+				<Player id="239" name="Jaïro Riedewald" age="26" country_ref="41"/>
+				<Player id="243" name="James McArthur" age="34" country_ref="20"/>
+				<Player id="247" name="James Tomkins" age="33" country_ref="1"/>
+				<Player id="263" name="Jeffrey Schlupp" age="29" country_ref="35"/>
+				<Player id="269" name="Joe Daniel Tupper" age="24" country_ref="1"/>
+				<Player id="276" name="Joel Ward" age="32" country_ref="1"/>
+				<Player id="288" name="Jordan Ayew" age="31" country_ref="35"/>
+				<Player id="305" name="Julián Speroni" age="43" country_ref="39"/>
+				<Player id="353" name="Luka Milivojević" age="31" country_ref="11"/>
+				<Player id="355" name="Luke Dreher" age="23" country_ref="1"/>
+				<Player id="359" name="Mamadou Sakho" age="32" country_ref="5"/>
+				<Player id="376" name="Martin Kelly" age="32" country_ref="1"/>
+				<Player id="395" name="Max Meyer" age="26" country_ref="17"/>
+				<Player id="403" name="Michy Batshuayi" age="28" country_ref="36"/>
+				<Player id="428" name="Nikola Tavares" age="23" country_ref="1"/>
+				<Player id="437" name="Pape N'Diaye Souaré" age="32" country_ref="33"/>
+				<Player id="439" name="Patrick van Aanholt" age="32" country_ref="41"/>
+				<Player id="491" name="Sam Woods" age="24" country_ref="1"/>
+				<Player id="494" name="Scott Dann" age="35" country_ref="1"/>
+				<Player id="523" name="Sullay Kaikai" age="27" country_ref="1"/>
+				<Player id="542" name="Vicente Guaita" age="35" country_ref="8"/>
+				<Player id="552" name="Wayne Hennessey" age="35" country_ref="3"/>
+				<Player id="556" name="Wilfried Zaha" age="29" country_ref="45"/>
+			</Players>
+		</Team>
+		<Team id="6" name="Watford">
+			<Players>
+				<Player id="8" name="Abdoulaye Doucouré" age="29" country_ref="5"/>
+				<Player id="10" name="Adalberto Peñaranda Maestre" age="25" country_ref="6"/>
+				<Player id="12" name="Adam Masina" age="28" country_ref="7"/>
+				<Player id="17" name="Adrian Mariappa" age="35" country_ref="9"/>
+				<Player id="41" name="Andre Gray" age="31" country_ref="1"/>
+				<Player id="73" name="Ben Foster" age="39" country_ref="1"/>
+				<Player id="78" name="Ben Wilmot" age="22" country_ref="1"/>
+				<Player id="117" name="Christian Kabasele" age="31" country_ref="36"/>
+				<Player id="125" name="Craig Cathcart" age="33" country_ref="38"/>
+				<Player id="142" name="Daryl Janmaat" age="33" country_ref="41"/>
+				<Player id="163" name="Domingos Quina" age="22" country_ref="10"/>
+				<Player id="179" name="Etienne Capoue" age="34" country_ref="5"/>
+				<Player id="195" name="Francisco Femenía Far" age="31" country_ref="8"/>
+				<Player id="206" name="Gerard Deulofeu" age="28" country_ref="8"/>
+				<Player id="224" name="Heurelho da Silva Gomes" age="41" country_ref="16"/>
+				<Player id="229" name="Isaac Ajayi Success" age="26" country_ref="12"/>
+				<Player id="294" name="José Holebas" age="38" country_ref="54"/>
+				<Player id="317" name="Ken Sema" age="28" country_ref="55"/>
+				<Player id="364" name="Marc Navarro Ceciliano" age="27" country_ref="8"/>
+				<Player id="405" name="Miguel Ángel Britos Cabrera" age="37" country_ref="57"/>
+				<Player id="421" name="Nathaniel Chalobah" age="27" country_ref="1"/>
+				<Player id="470" name="Roberto Maximiliano Pereyra" age="31" country_ref="39"/>
+				<Player id="500" name="Sebastian Prödl" age="35" country_ref="37"/>
+				<Player id="515" name="Stefano Okaka" age="33" country_ref="7"/>
+				<Player id="533" name="Tom Cleverley" age="33" country_ref="1"/>
+				<Player id="538" name="Troy Deeney" age="34" country_ref="1"/>
+				<Player id="557" name="Will Hughes" age="27" country_ref="1"/>
+			</Players>
+		</Team>
+		<Team id="7" name="Fulham">
+			<Players>
+				<Player id="9" name="Aboubakar Kamara" age="27" country_ref="5"/>
+				<Player id="22" name="Aleksandar Mitrović" age="27" country_ref="11"/>
+				<Player id="33" name="Alfie Mawson" age="28" country_ref="1"/>
+				<Player id="42" name="André Schürrle" age="31" country_ref="17"/>
+				<Player id="43" name="André-Frank Zambo Anguissa" age="26" country_ref="18"/>
+				<Player id="97" name="Calum Chambers" age="27" country_ref="1"/>
+				<Player id="127" name="Cyrus Christie" age="29" country_ref="29"/>
+				<Player id="158" name="Denis Odoi" age="34" country_ref="36"/>
+				<Player id="184" name="Fabricio Martín Agosto Ramírez" age="34" country_ref="8"/>
+				<Player id="193" name="Floyd Ayité" age="33" country_ref="49"/>
+				<Player id="219" name="Håvard Nordtveit" age="32" country_ref="13"/>
+				<Player id="226" name="Ibrahima Cissé" age="28" country_ref="36"/>
+				<Player id="260" name="Jean Michau00ebl Seri" age="31" country_ref="45"/>
+				<Player id="268" name="Joe Bryan" age="28" country_ref="1"/>
+				<Player id="322" name="Kevin McDonald" age="33" country_ref="20"/>
+				<Player id="333" name="Lazar Marković" age="28" country_ref="11"/>
+				<Player id="347" name="Luca de la Torre" age="24" country_ref="40"/>
+				<Player id="352" name="Luciano Vietto" age="28" country_ref="39"/>
+				<Player id="367" name="Marcus Bettinelli" age="30" country_ref="1"/>
+				<Player id="396" name="Maxime Le Marchand" age="32" country_ref="5"/>
+				<Player id="424" name="Neeskens Kebano" age="30" country_ref="44"/>
+				<Player id="484" name="Ryan Guno Babel" age="35" country_ref="41"/>
+				<Player id="486" name="Ryan Sessegnon" age="22" country_ref="1"/>
+				<Player id="504" name="Sergio Rico" age="29" country_ref="8"/>
+				<Player id="514" name="Stefan Marius Johansen" age="31" country_ref="13"/>
+				<Player id="528" name="Tim Ream" age="34" country_ref="40"/>
+				<Player id="530" name="Timothy Fosu-Mensah" age="24" country_ref="41"/>
+				<Player id="532" name="Tom Cairney" age="31" country_ref="20"/>
+				<Player id="568" name="Zeze Steven Sessegnon" age="22" country_ref="1"/>
+			</Players>
+		</Team>
+		<Team id="8" name="Liverpool">
+			<Players>
+				<Player id="11" name="Adam David Lallana" age="34" country_ref="1"/>
+				<Player id="21" name="Alberto Moreno" age="30" country_ref="8"/>
+				<Player id="25" name="Alex Oxlade-Chamberlain" age="29" country_ref="1"/>
+				<Player id="37" name="Alisson Becker" age="29" country_ref="16"/>
+				<Player id="46" name="Andrew Robertson" age="28" country_ref="20"/>
+				<Player id="126" name="Curtis Jones" age="21" country_ref="1"/>
+				<Player id="133" name="Daniel Sturridge" age="33" country_ref="1"/>
+				<Player id="154" name="Dejan Lovren" age="33" country_ref="43"/>
+				<Player id="162" name="Divock Origi" age="27" country_ref="36"/>
+				<Player id="183" name="Fabinho" age="28" country_ref="16"/>
+				<Player id="205" name="Georginio Wijnaldum" age="31" country_ref="41"/>
+				<Player id="245" name="James Milner" age="36" country_ref="1"/>
+				<Player id="270" name="Joe Gomez" age="25" country_ref="1"/>
+				<Player id="275" name="Joel Matip" age="31" country_ref="18"/>
+				<Player id="289" name="Jordan Henderson" age="32" country_ref="1"/>
+				<Player id="346" name="Loris Karius" age="29" country_ref="17"/>
+				<Player id="409" name="Mohamed Salah" age="30" country_ref="61"/>
+				<Player id="415" name="Naby Deco Keïta" age="27" country_ref="62"/>
+				<Player id="456" name="Rafael Euclides Soares Camacho" age="22" country_ref="10"/>
+				<Player id="469" name="Roberto Firmino" age="30" country_ref="16"/>
+				<Player id="487" name="Sadio Mané" age="30" country_ref="33"/>
+				<Player id="510" name="Simon Mignolet" age="34" country_ref="36"/>
+				<Player id="537" name="Trent Alexander-Arnold" age="23" country_ref="1"/>
+				<Player id="551" name="Virgil van Dijk" age="31" country_ref="41"/>
+				<Player id="561" name="Xherdan Shaqiri" age="30" country_ref="47"/>
+			</Players>
+		</Team>
+		<Team id="9" name="AFC Bournemouth">
+			<Players>
+				<Player id="13" name="Adam Smith" age="31" country_ref="1"/>
+				<Player id="47" name="Andrew Surman" age="36" country_ref="1"/>
+				<Player id="63" name="Artur Boruc" age="42" country_ref="25"/>
+				<Player id="67" name="Asmir Begović" age="35" country_ref="26"/>
+				<Player id="96" name="Callum Wilson" age="30" country_ref="1"/>
+				<Player id="106" name="Charlie Daniels" age="36" country_ref="1"/>
+				<Player id="110" name="Chris Mepham" age="24" country_ref="3"/>
+				<Player id="131" name="Dan Gosling" age="32" country_ref="1"/>
+				<Player id="143" name="David Brooks" age="25" country_ref="1"/>
+				<Player id="160" name="Diego Rico" age="29" country_ref="8"/>
+				<Player id="165" name="Dominic Solanke" age="25" country_ref="1"/>
+				<Player id="171" name="Emerson Hyndman" age="26" country_ref="40"/>
+				<Player id="235" name="Jack Simpson" age="25" country_ref="1"/>
+				<Player id="262" name="Jefferson Lerma" age="27" country_ref="32"/>
+				<Player id="264" name="Jermain Defoe" age="39" country_ref="1"/>
+				<Player id="291" name="Jordon Ibe" age="26" country_ref="1"/>
+				<Player id="301" name="Joshua King" age="30" country_ref="13"/>
+				<Player id="307" name="Junior Stanislas" age="32" country_ref="1"/>
+				<Player id="328" name="Kyle Taylor" age="23" country_ref="1"/>
+				<Player id="343" name="Lewis Cook" age="25" country_ref="1"/>
+				<Player id="357" name="Lys Mousset" age="26" country_ref="5"/>
+				<Player id="365" name="Marc Pugh" age="35" country_ref="1"/>
+				<Player id="371" name="Mark Travers" age="23" country_ref="29"/>
+				<Player id="384" name="Matt Butcher" age="25" country_ref="1"/>
+				<Player id="418" name="Nathan Aké" age="27" country_ref="41"/>
+				<Player id="422" name="Nathaniel Clyne" age="31" country_ref="1"/>
+				<Player id="429" name="Nnamdi Ofoborh" age="22" country_ref="1"/>
+				<Player id="481" name="Ryan Fraser" age="28" country_ref="20"/>
+				<Player id="489" name="Sam Surridge" age="24" country_ref="1"/>
+				<Player id="509" name="Simon Francis" age="37" country_ref="1"/>
+				<Player id="518" name="Steve Cook" age="31" country_ref="1"/>
+				<Player id="541" name="Tyrone Mings" age="29" country_ref="1"/>
+			</Players>
+		</Team>
+		<Team id="10" name="Wolverhampton Wanderers">
+			<Players>
+				<Player id="15" name="Adama Traoré Diarra" age="26" country_ref="8"/>
+				<Player id="88" name="Bright Enobakhare" age="24" country_ref="1"/>
+				<Player id="98" name="Cameron John" age="23" country_ref="1"/>
+				<Player id="123" name="Conor Coady" age="29" country_ref="1"/>
+				<Player id="161" name="Diogo José Teixeira da Silva" age="25" country_ref="10"/>
+				<Player id="221" name="Hélder Wander Sousa Azevedo Costa" age="28" country_ref="10"/>
+				<Player id="233" name="Ivan Ricardo Neves Abreu Cavaleiro" age="28" country_ref="10"/>
+				<Player id="266" name="João Moutinho" age="36" country_ref="10"/>
+				<Player id="278" name="John Ruddy" age="35" country_ref="1"/>
+				<Player id="286" name="Jonny" age="28" country_ref="8"/>
+				<Player id="326" name="Kortney Hause" age="27" country_ref="1"/>
+				<Player id="334" name="Leander Dendoncker" age="27" country_ref="36"/>
+				<Player id="340" name="Leonardo Bonatini Lohner Maia" age="28" country_ref="16"/>
+				<Player id="385" name="Matt Doherty" age="30" country_ref="29"/>
+				<Player id="394" name="Max Kilman" age="25" country_ref="1"/>
+				<Player id="410" name="Morgan Gibbs-White" age="22" country_ref="1"/>
+				<Player id="460" name="Raúl Alonso Jiménez Rodríguez" age="31" country_ref="52"/>
+				<Player id="471" name="Romain Saïss" age="32" country_ref="4"/>
+				<Player id="475" name="Rúben Diogo Da Silva Neves" age="25" country_ref="10"/>
+				<Player id="476" name="Rúben Gonçalo Silva Nascimento Vinagre" age="23" country_ref="10"/>
+				<Player id="478" name="Rui Pedro dos Santos Patrício" age="34" country_ref="10"/>
+				<Player id="479" name="Ryan Bennett" age="32" country_ref="1"/>
+				<Player id="483" name="Ryan Giles" age="22" country_ref="1"/>
+				<Player id="558" name="Will Norris" age="29" country_ref="1"/>
+				<Player id="560" name="Willy Boly" age="31" country_ref="5"/>
+			</Players>
+		</Team>
+		<Team id="11" name="Everton">
+			<Players>
+				<Player id="16" name="Ademola Lookman" age="24" country_ref="1"/>
+				<Player id="40" name="André Filipe Tavares Gomes" age="29" country_ref="10"/>
+				<Player id="82" name="Bernard Anício Caldeira Duarte" age="30" country_ref="16"/>
+				<Player id="102" name="Cenk Tosun" age="31" country_ref="31"/>
+				<Player id="164" name="Dominic Calvert-Lewin" age="25" country_ref="1"/>
+				<Player id="212" name="Gylfi Sigurdsson" age="33" country_ref="24"/>
+				<Player id="227" name="Idrissa Gana Gueye" age="32" country_ref="33"/>
+				<Player id="244" name="James McCarthy" age="31" country_ref="29"/>
+				<Player id="285" name="Jonjoe Kenny" age="25" country_ref="1"/>
+				<Player id="290" name="Jordan Pickford" age="28" country_ref="1"/>
+				<Player id="323" name="Kieran Dowell" age="24" country_ref="1"/>
+				<Player id="327" name="Kurt Zouma" age="27" country_ref="5"/>
+				<Player id="338" name="Leighton Baines" age="37" country_ref="1"/>
+				<Player id="348" name="Lucas Digne" age="29" country_ref="5"/>
+				<Player id="358" name="Maarten Stekelenburg" age="39" country_ref="41"/>
+				<Player id="379" name="Mason Holgate" age="25" country_ref="1"/>
+				<Player id="399" name="Michael Keane" age="29" country_ref="1"/>
+				<Player id="411" name="Morgan Schneiderlin" age="32" country_ref="5"/>
+				<Player id="448" name="Phil Jagielka" age="40" country_ref="1"/>
+				<Player id="463" name="Richarlison de Andrade" age="25" country_ref="16"/>
+				<Player id="493" name="Sandro Ramirez" age="27" country_ref="8"/>
+				<Player id="497" name="Séamus Coleman" age="33" country_ref="29"/>
+				<Player id="527" name="Theo Walcott" age="33" country_ref="1"/>
+				<Player id="534" name="Tom Davies" age="24" country_ref="1"/>
+				<Player id="539" name="Tyias Browning" age="28" country_ref="1"/>
+				<Player id="563" name="Yerry Fernando Mina González" age="27" country_ref="32"/>
+			</Players>
+		</Team>
+		<Team id="12" name="Leicester City">
+			<Players>
+				<Player id="19" name="Adrien Sebastian Perruchet Silva" age="33" country_ref="10"/>
+				<Player id="71" name="Ben Chilwell" age="25" country_ref="1"/>
+				<Player id="91" name="Caglar Söyüncü" age="26" country_ref="31"/>
+				<Player id="116" name="Christian Fuchs" age="36" country_ref="37"/>
+				<Player id="132" name="Daniel Amartey" age="27" country_ref="35"/>
+				<Player id="139" name="Danny Simpson" age="35" country_ref="1"/>
+				<Player id="140" name="Danny Ward" age="29" country_ref="3"/>
+				<Player id="156" name="Demarai Gray" age="26" country_ref="1"/>
+				<Player id="194" name="Fousseni Diabaté" age="26" country_ref="27"/>
+				<Player id="213" name="Hamza Choudhury" age="24" country_ref="1"/>
+				<Player id="216" name="Harry Maguire" age="29" country_ref="1"/>
+				<Player id="218" name="Harvey Lewis Barnes" age="24" country_ref="1"/>
+				<Player id="242" name="James Maddison" age="25" country_ref="1"/>
+				<Player id="250" name="Jamie Vardy" age="35" country_ref="1"/>
+				<Player id="287" name="Jonny Evans" age="34" country_ref="38"/>
+				<Player id="299" name="Josh Knight" age="25" country_ref="1"/>
+				<Player id="312" name="Kasper Schmeichel" age="35" country_ref="19"/>
+				<Player id="315" name="Kelechi Iheanacho" age="25" country_ref="12"/>
+				<Player id="362" name="Marc Albrighton" age="32" country_ref="1"/>
+				<Player id="417" name="Nampalys Mendy" age="30" country_ref="5"/>
+				<Player id="433" name="Onyinye Wilfred Ndidi" age="25" country_ref="12"/>
+				<Player id="455" name="Rachid Ghezzal" age="30" country_ref="65"/>
+				<Player id="462" name="Ricardo Domingos Barbosa Pereira" age="28" country_ref="10"/>
+				<Player id="507" name="Shinji Okazaki" age="36" country_ref="60"/>
+				<Player id="543" name="Vicente Iborra De La Fuente" age="34" country_ref="8"/>
+				<Player id="553" name="Wes Morgan" age="38" country_ref="9"/>
+				<Player id="565" name="Youri Tielemans" age="25" country_ref="36"/>
+			</Players>
+		</Team>
+		<Team id="13" name="Southampton">
+			<Players>
+				<Player id="24" name="Alex McCarthy" age="32" country_ref="1"/>
+				<Player id="32" name="Alfie Jones" age="24" country_ref="1"/>
+				<Player id="53" name="Angus Gunn" age="26" country_ref="1"/>
+				<Player id="95" name="Callum Slattery" age="23" country_ref="1"/>
+				<Player id="101" name="Cedric Soares" age="31" country_ref="10"/>
+				<Player id="105" name="Charlie Austin" age="33" country_ref="1"/>
+				<Player id="134" name="Daniel William John Ings" age="30" country_ref="1"/>
+				<Player id="196" name="Fraser Forster" age="34" country_ref="1"/>
+				<Player id="236" name="Jack Stephens" age="28" country_ref="1"/>
+				<Player id="248" name="James Ward-Prowse" age="27" country_ref="1"/>
+				<Player id="251" name="Jan Bednarek" age="26" country_ref="25"/>
+				<Player id="253" name="Jannik Vestergaard" age="30" country_ref="19"/>
+				<Player id="302" name="Joshua Sims" age="25" country_ref="1"/>
+				<Player id="313" name="Kayne Ramsey" age="21" country_ref="1"/>
+				<Player id="360" name="Manolo Gabbiadini" age="30" country_ref="7"/>
+				<Player id="369" name="Mario Lemina" age="29" country_ref="30"/>
+				<Player id="387" name="Matt Targett" age="26" country_ref="1"/>
+				<Player id="397" name="Maya Yoshida" age="34" country_ref="60"/>
+				<Player id="400" name="Michael Obafemi" age="22" country_ref="29"/>
+				<Player id="408" name="Mohamed Elyounoussi" age="28" country_ref="13"/>
+				<Player id="420" name="Nathan Redmond" age="28" country_ref="1"/>
+				<Player id="434" name="Oriol Romeu" age="30" country_ref="8"/>
+				<Player id="454" name="Pierre-Emile Højbjerg" age="27" country_ref="19"/>
+				<Player id="480" name="Ryan Bertrand" age="33" country_ref="1"/>
+				<Player id="488" name="Sam Gallagher" age="27" country_ref="1"/>
+				<Player id="506" name="Shane Long" age="35" country_ref="29"/>
+				<Player id="520" name="Steven Davis" age="37" country_ref="38"/>
+				<Player id="522" name="Stuart Armstrong" age="30" country_ref="20"/>
+				<Player id="540" name="Tyreke Johnson" age="23" country_ref="1"/>
+				<Player id="554" name="Wesley Hoedt" age="28" country_ref="41"/>
+				<Player id="562" name="Yann Valery" age="23" country_ref="5"/>
+			</Players>
+		</Team>
+		<Team id="14" name="Cardiff City">
+			<Players>
+				<Player id="27" name="Alex Smithies" age="32" country_ref="1"/>
+				<Player id="61" name="Aron Einar Gunnarsson" age="33" country_ref="24"/>
+				<Player id="86" name="Bobby Reid" age="29" country_ref="1"/>
+				<Player id="87" name="Brian Murphy" age="39" country_ref="29"/>
+				<Player id="89" name="Bruno Écuélé Manga" age="34" country_ref="30"/>
+				<Player id="93" name="Callum Paterson" age="27" country_ref="20"/>
+				<Player id="146" name="David Junior Hoilett" age="32" country_ref="42"/>
+				<Player id="202" name="Gary Madine" age="32" country_ref="1"/>
+				<Player id="211" name="Greg Cunningham" age="31" country_ref="29"/>
+				<Player id="214" name="Harry Arter" age="32" country_ref="29"/>
+				<Player id="259" name="Jazz Richards" age="31" country_ref="3"/>
+				<Player id="267" name="Joe Bennett" age="32" country_ref="1"/>
+				<Player id="273" name="Joe Ralls" age="28" country_ref="1"/>
+				<Player id="300" name="Josh Murphy" age="27" country_ref="1"/>
+				<Player id="309" name="Kadeem Harris" age="29" country_ref="1"/>
+				<Player id="318" name="Kenneth Dahrup Zohorè" age="28" country_ref="19"/>
+				<Player id="335" name="Leandro Bacuna" age="31" country_ref="56"/>
+				<Player id="337" name="Lee Peltier" age="35" country_ref="1"/>
+				<Player id="345" name="Loïc Damour" age="31" country_ref="5"/>
+				<Player id="390" name="Matthew Connolly" age="34" country_ref="1"/>
+				<Player id="423" name="Nathaniel Mendez-Laing" age="30" country_ref="1"/>
+				<Player id="425" name="Neil Leonard Dula Etheridge" age="32" country_ref="63"/>
+				<Player id="435" name="Oumar Niasse" age="32" country_ref="33"/>
+				<Player id="461" name="Rhys Healey" age="27" country_ref="1"/>
+				<Player id="499" name="Sean Morrison" age="31" country_ref="1"/>
+				<Player id="513" name="Souleymane Bamba" age="37" country_ref="45"/>
+				<Player id="544" name="Víctor Camarasa" age="28" country_ref="8"/>
+			</Players>
+		</Team>
+		<Team id="15" name="Manchester United">
+			<Players>
+				<Player id="31" name="Alexis Sanchez" age="33" country_ref="14"/>
+				<Player id="39" name="Ander Herrera" age="33" country_ref="8"/>
+				<Player id="45" name="Andreas Pereira" age="26" country_ref="16"/>
+				<Player id="51" name="Angel Gomes" age="22" country_ref="1"/>
+				<Player id="56" name="Anthony Martial" age="26" country_ref="5"/>
+				<Player id="59" name="Antonio Valencia" age="37" country_ref="22"/>
+				<Player id="66" name="Ashley Young" age="37" country_ref="1"/>
+				<Player id="111" name="Chris Smalling" age="32" country_ref="1"/>
+				<Player id="145" name="David de Gea" age="31" country_ref="8"/>
+				<Player id="174" name="Eric Bertrand Bailly" age="28" country_ref="45"/>
+				<Player id="185" name="Faustino Marcos Alberto Rojo" age="32" country_ref="39"/>
+				<Player id="198" name="Frederico Rodrigues Santos" age="29" country_ref="16"/>
+				<Player id="241" name="James Garner" age="21" country_ref="1"/>
+				<Player id="265" name="Jesse Lingard" age="29" country_ref="1"/>
+				<Player id="293" name="José Diogo Dalot Teixeira" age="23" country_ref="10"/>
+				<Player id="304" name="Juan Mata" age="34" country_ref="8"/>
+				<Player id="336" name="Lee Grant" age="39" country_ref="1"/>
+				<Player id="356" name="Luke Shaw" age="27" country_ref="1"/>
+				<Player id="368" name="Marcus Rashford" age="24" country_ref="1"/>
+				<Player id="374" name="Marouane Fellaini" age="34" country_ref="36"/>
+				<Player id="378" name="Mason Greenwood" age="20" country_ref="1"/>
+				<Player id="388" name="Matteo Darmian" age="32" country_ref="7"/>
+				<Player id="426" name="Nemanja Matić" age="34" country_ref="11"/>
+				<Player id="441" name="Paul Pogba" age="29" country_ref="5"/>
+				<Player id="449" name="Phil Jones" age="30" country_ref="1"/>
+				<Player id="472" name="Romelu Lukaku" age="29" country_ref="36"/>
+				<Player id="495" name="Scott McTominay" age="25" country_ref="1"/>
+				<Player id="503" name="Sergio Germán Romero" age="35" country_ref="39"/>
+				<Player id="525" name="Tahith Chong" age="22" country_ref="41"/>
+				<Player id="546" name="Victor Nilsson Lindelöf" age="28" country_ref="55"/>
+			</Players>
+		</Team>
+		<Team id="16" name="Tottenham Hotspur">
+			<Players>
+				<Player id="34" name="Alfie Whiteman" age="23" country_ref="1"/>
+				<Player id="72" name="Ben Davies" age="29" country_ref="3"/>
+				<Player id="115" name="Christian Eriksen" age="30" country_ref="19"/>
+				<Player id="138" name="Danny Rose" age="32" country_ref="1"/>
+				<Player id="150" name="Davinson Sánchez Mina" age="26" country_ref="32"/>
+				<Player id="155" name="Dele Alli" age="26" country_ref="1"/>
+				<Player id="175" name="Eric Dier" age="28" country_ref="1"/>
+				<Player id="177" name="Erik Lamela" age="30" country_ref="39"/>
+				<Player id="188" name="Fernando Llorente Torres" age="37" country_ref="8"/>
+				<Player id="203" name="George Marsh" age="23" country_ref="1"/>
+				<Player id="204" name="Georges-Kevin N'Koudou Mbida" age="27" country_ref="5"/>
+				<Player id="215" name="Harry Kane" age="29" country_ref="1"/>
+				<Player id="217" name="Harry Winks" age="26" country_ref="1"/>
+				<Player id="223" name="Heung-Min Son" age="30" country_ref="51"/>
+				<Player id="225" name="Hugo Lloris" age="35" country_ref="5"/>
+				<Player id="252" name="Jan Vertonghen" age="35" country_ref="36"/>
+				<Player id="303" name="Juan Marcos Foyth" age="24" country_ref="39"/>
+				<Player id="314" name="Kazaiah Sterling" age="23" country_ref="1"/>
+				<Player id="324" name="Kieran Trippier" age="31" country_ref="1"/>
+				<Player id="330" name="Kyle Walker-Peters" age="25" country_ref="1"/>
+				<Player id="350" name="Lucas Rodrigues Moura da Silva" age="30" country_ref="16"/>
+				<Player id="354" name="Luke Amos" age="25" country_ref="1"/>
+				<Player id="402" name="Michel Vorm" age="38" country_ref="41"/>
+				<Player id="412" name="Moussa Dembele" age="35" country_ref="36"/>
+				<Player id="413" name="Moussa Sissoko" age="33" country_ref="5"/>
+				<Player id="431" name="Oliver Skipp" age="22" country_ref="1"/>
+				<Player id="442" name="Paulo Dino Gazzaniga" age="30" country_ref="39"/>
+				<Player id="501" name="Serge Aurier" age="29" country_ref="45"/>
+				<Player id="529" name="Timothy Eyoma" age="22" country_ref="1"/>
+				<Player id="531" name="Toby Alderweireld" age="33" country_ref="36"/>
+				<Player id="547" name="Victor Wanyama" age="31" country_ref="67"/>
+				<Player id="549" name="Vincent Janssen" age="28" country_ref="41"/>
+			</Players>
+		</Team>
+		<Team id="17" name="Brighton &amp; Hove Albion">
+			<Players>
+				<Player id="36" name="Alireza Jahanbakhsh" age="29" country_ref="15"/>
+				<Player id="55" name="Anthony Knockaert" age="30" country_ref="5"/>
+				<Player id="77" name="Ben White" age="24" country_ref="1"/>
+				<Player id="81" name="Beram Kayal" age="34" country_ref="28"/>
+				<Player id="83" name="Bernardo" age="27" country_ref="16"/>
+				<Player id="90" name="Bruno Saltor Grau" age="41" country_ref="8"/>
+				<Player id="128" name="Dale Stephens" age="33" country_ref="1"/>
+				<Player id="130" name="Dan Burn" age="30" country_ref="1"/>
+				<Player id="144" name="David Button" age="33" country_ref="1"/>
+				<Player id="151" name="Davy Pröpper" age="31" country_ref="41"/>
+				<Player id="192" name="Florin Andone" age="29" country_ref="48"/>
+				<Player id="200" name="Gaëtan Bong Songo" age="34" country_ref="18"/>
+				<Player id="207" name="Glenn Murray" age="38" country_ref="1"/>
+				<Player id="255" name="Jason Steele" age="32" country_ref="1"/>
+				<Player id="258" name="Jayson Molumby" age="23" country_ref="29"/>
+				<Player id="295" name="Jose Izquierdo" age="30" country_ref="32"/>
+				<Player id="308" name="Jürgen Locadia" age="28" country_ref="41"/>
+				<Player id="339" name="Leon Balogun" age="34" country_ref="12"/>
+				<Player id="344" name="Lewis Dunk" age="30" country_ref="1"/>
+				<Player id="373" name="Markus Suttner" age="35" country_ref="37"/>
+				<Player id="377" name="Martín Montoya" age="31" country_ref="8"/>
+				<Player id="382" name="Mathew Ryan" age="30" country_ref="2"/>
+				<Player id="393" name="Max Harrison Sanders" age="23" country_ref="1"/>
+				<Player id="438" name="Pascal Groß" age="31" country_ref="17"/>
+				<Player id="505" name="Shane Duffy" age="30" country_ref="29"/>
+				<Player id="512" name="Solomon March" age="28" country_ref="1"/>
+				<Player id="548" name="Viktor Gyökeres" age="24" country_ref="55"/>
+				<Player id="566" name="Yves Bissouma" age="26" country_ref="27"/>
+			</Players>
+		</Team>
+		<Team id="18" name="Chelsea">
+			<Players>
+				<Player id="38" name="Alvaro Morata" age="29" country_ref="8"/>
+				<Player id="44" name="Andreas Christensen" age="26" country_ref="19"/>
+				<Player id="58" name="Antonio Rüdiger" age="29" country_ref="17"/>
+				<Player id="92" name="Callum Hudson-Odoi" age="21" country_ref="1"/>
+				<Player id="103" name="Cesar Azpilicueta" age="33" country_ref="8"/>
+				<Player id="104" name="Cesc Fabregas" age="35" country_ref="8"/>
+				<Player id="137" name="Danny Drinkwater" age="32" country_ref="1"/>
+				<Player id="147" name="David Luiz" age="35" country_ref="16"/>
+				<Player id="149" name="Davide Zappacosta" age="30" country_ref="7"/>
+				<Player id="167" name="Eden Hazard" age="31" country_ref="36"/>
+				<Player id="172" name="Emerson Palmieri dos Santos" age="28" country_ref="7"/>
+				<Player id="178" name="Ethan Ampadu" age="22" country_ref="3"/>
+				<Player id="201" name="Gary Cahill" age="36" country_ref="1"/>
+				<Player id="208" name="Gonzalo Higuain" age="34" country_ref="39"/>
+				<Player id="292" name="Jorginho" age="30" country_ref="7"/>
+				<Player id="319" name="Kepa Arrizabalaga" age="27" country_ref="8"/>
+				<Player id="363" name="Marc Guehi" age="22" country_ref="1"/>
+				<Player id="366" name="Marcos Alonso" age="31" country_ref="8"/>
+				<Player id="381" name="Mateo Kovačić" age="28" country_ref="43"/>
+				<Player id="414" name="N'Golo Kanté" age="31" country_ref="5"/>
+				<Player id="432" name="Olivier Giroud" age="35" country_ref="5"/>
+				<Player id="444" name="Pedro Rodriguez" age="35" country_ref="8"/>
+				<Player id="474" name="Ross Barkley" age="28" country_ref="1"/>
+				<Player id="477" name="Ruben Loftus-Cheek" age="26" country_ref="1"/>
+				<Player id="545" name="Victor Moses" age="31" country_ref="12"/>
+				<Player id="555" name="Wilfredo Daniel Caballero" age="40" country_ref="39"/>
+				<Player id="559" name="Willian" age="34" country_ref="16"/>
+			</Players>
+		</Team>
+		<Team id="19" name="Newcastle United">
+			<Players>
+				<Player id="57" name="Antonio Barreca" age="27" country_ref="7"/>
+				<Player id="69" name="Ayoze Perez" age="29" country_ref="8"/>
+				<Player id="94" name="Callum Roberts" age="25" country_ref="1"/>
+				<Player id="113" name="Christian Atsu Twasam" age="30" country_ref="35"/>
+				<Player id="119" name="Ciaran Clark" age="32" country_ref="29"/>
+				<Player id="152" name="DeAndre Yedlin" age="29" country_ref="40"/>
+				<Player id="182" name="Fabian Schär" age="30" country_ref="47"/>
+				<Player id="186" name="Federico Fernández" age="33" country_ref="39"/>
+				<Player id="191" name="Florian Lejeune" age="31" country_ref="5"/>
+				<Player id="197" name="Freddie Woodman" age="25" country_ref="1"/>
+				<Player id="230" name="Isaac Hayden" age="27" country_ref="1"/>
+				<Player id="238" name="Jacob Murphy" age="27" country_ref="1"/>
+				<Player id="240" name="Jamal Lascelles" age="28" country_ref="1"/>
+				<Player id="249" name="Jamie Sterry" age="26" country_ref="1"/>
+				<Player id="257" name="Javier Manquillo Gaitán" age="28" country_ref="8"/>
+				<Player id="284" name="Jonjo Shelvey" age="30" country_ref="1"/>
+				<Player id="296" name="José Luis Sanmartín Mato" age="32" country_ref="8"/>
+				<Player id="310" name="Karl Darlow" age="31" country_ref="1"/>
+				<Player id="316" name="Kelland Watts" age="22" country_ref="1"/>
+				<Player id="342" name="Lewis Cass" age="22" country_ref="1"/>
+				<Player id="375" name="Martin Dúbravka" age="33" country_ref="58"/>
+				<Player id="386" name="Matt Ritchie" age="33" country_ref="20"/>
+				<Player id="404" name="Miguel Ángel Almirón Rejala" age="28" country_ref="46"/>
+				<Player id="406" name="Mohamed Diamé" age="35" country_ref="33"/>
+				<Player id="440" name="Paul Dummett" age="30" country_ref="3"/>
+				<Player id="467" name="Robert Kenedy Nunes do Nascimento" age="26" country_ref="16"/>
+				<Player id="473" name="Rondon" age="32" country_ref="6"/>
+				<Player id="498" name="Sean Longstaff" age="24" country_ref="1"/>
+				<Player id="524" name="Sung-Yeung Ki" age="33" country_ref="51"/>
+				<Player id="564" name="Yoshinori Muto" age="30" country_ref="60"/>
+			</Players>
+		</Team>
+		<Team id="20" name="Manchester City">
+			<Players>
+				<Player id="60" name="Arijanet Muric" age="23" country_ref="23"/>
+				<Player id="68" name="Aymeric Laporte" age="28" country_ref="5"/>
+				<Player id="80" name="Benjamin Mendy" age="28" country_ref="5"/>
+				<Player id="84" name="Bernardo Silva" age="28" country_ref="10"/>
+				<Player id="120" name="Claudio Andrés Bravo Muñoz" age="39" country_ref="14"/>
+				<Player id="136" name="Danilo" age="31" country_ref="16"/>
+				<Player id="148" name="David Silva" age="36" country_ref="8"/>
+				<Player id="168" name="Ederson" age="29" country_ref="16"/>
+				<Player id="181" name="Fabian Delph" age="32" country_ref="1"/>
+				<Player id="189" name="Fernando Luiz Rosa" age="37" country_ref="16"/>
+				<Player id="199" name="Gabriel Jesus" age="25" country_ref="16"/>
+				<Player id="228" name="İlkay Gündoğan" age="31" country_ref="17"/>
+				<Player id="279" name="John Stones" age="28" country_ref="1"/>
+				<Player id="320" name="Kevin De Bruyne" age="31" country_ref="36"/>
+				<Player id="329" name="Kyle Walker" age="32" country_ref="1"/>
+				<Player id="341" name="Leroy Sané" age="26" country_ref="17"/>
+				<Player id="427" name="Nicolas Otamendi" age="34" country_ref="39"/>
+				<Player id="430" name="Oleksandr Zinchenko" age="25" country_ref="21"/>
+				<Player id="451" name="Philip Foden" age="22" country_ref="1"/>
+				<Player id="452" name="Philippe Sandler" age="25" country_ref="41"/>
+				<Player id="457" name="Raheem Sterling" age="27" country_ref="1"/>
+				<Player id="464" name="Riyad Mahrez" age="31" country_ref="65"/>
+				<Player id="502" name="Sergio Aguero" age="34" country_ref="39"/>
+				<Player id="550" name="Vincent Kompany" age="36" country_ref="36"/>
+			</Players>
+		</Team>
+	</Teams>
+	<Countries>
+		<Country id="1" name="England"/>
+		<Country id="2" name="Australia"/>
+		<Country id="3" name="Wales"/>
+		<Country id="4" name="Morocco"/>
+		<Country id="5" name="France"/>
+		<Country id="6" name="Venezuela"/>
+		<Country id="7" name="Italy"/>
+		<Country id="8" name="Spain"/>
+		<Country id="9" name="Jamaica"/>
+		<Country id="10" name="Portugal"/>
+		<Country id="11" name="Serbia"/>
+		<Country id="12" name="Nigeria"/>
+		<Country id="13" name="Norway"/>
+		<Country id="14" name="Chile"/>
+		<Country id="15" name="Iran"/>
+		<Country id="16" name="Brazil"/>
+		<Country id="17" name="Germany"/>
+		<Country id="18" name="Cameroon"/>
+		<Country id="19" name="Denmark"/>
+		<Country id="20" name="Scotland"/>
+		<Country id="21" name="Ukraine"/>
+		<Country id="22" name="Ecuador"/>
+		<Country id="23" name="Montenegro"/>
+		<Country id="24" name="Iceland"/>
+		<Country id="25" name="Poland"/>
+		<Country id="26" name="Bosnia and Herzegovina"/>
+		<Country id="27" name="Mali"/>
+		<Country id="28" name="Israel"/>
+		<Country id="29" name="Republic of Ireland"/>
+		<Country id="30" name="Gabon"/>
+		<Country id="31" name="Turkey"/>
+		<Country id="32" name="Colombia"/>
+		<Country id="33" name="Senegal"/>
+		<Country id="34" name="New Zealand"/>
+		<Country id="35" name="Ghana"/>
+		<Country id="36" name="Belgium"/>
+		<Country id="37" name="Austria"/>
+		<Country id="38" name="Northern Ireland"/>
+		<Country id="39" name="Argentina"/>
+		<Country id="40" name="USA"/>
+		<Country id="41" name="Netherlands"/>
+		<Country id="42" name="Canada"/>
+		<Country id="43" name="Croatia"/>
+		<Country id="44" name="Congo DR"/>
+		<Country id="45" name="Ivory Coast"/>
+		<Country id="46" name="Paraguay"/>
+		<Country id="47" name="Switzerland"/>
+		<Country id="48" name="Romania"/>
+		<Country id="49" name="Togo"/>
+		<Country id="50" name="Armenia"/>
+		<Country id="51" name="South Korea"/>
+		<Country id="52" name="Mexico"/>
+		<Country id="53" name="Slovenia"/>
+		<Country id="54" name="Greece"/>
+		<Country id="55" name="Sweden"/>
+		<Country id="56" name="Curaçao"/>
+		<Country id="57" name="Uruguay"/>
+		<Country id="58" name="Slovakia"/>
+		<Country id="59" name="Czech Republic"/>
+		<Country id="60" name="Japan"/>
+		<Country id="61" name="Egypt"/>
+		<Country id="62" name="Guinea"/>
+		<Country id="63" name="Philippines"/>
+		<Country id="64" name="Equatorial Guinea"/>
+		<Country id="65" name="Algeria"/>
+		<Country id="66" name="Benin"/>
+		<Country id="67" name="Kenya"/>
+	</Countries>
+</Football>

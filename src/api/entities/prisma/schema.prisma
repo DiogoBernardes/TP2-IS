@@ -1,0 +1,66 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Country {
+  id    Int     @id @default(autoincrement())
+  name  String
+  @@map("Country")
+}
+
+model Customer {
+  id         Int      @id @default(autoincrement())
+  first_name String
+  last_name  String
+  country_id Int
+  Country    Country  @relation(fields: [country_id], references: [id])
+  @@map("Customer")
+}
+
+model Brand {
+  id    Int     @id @default(autoincrement())
+  name  String
+  @@map("Brand")
+}
+
+model Model {
+  id       Int      @id @default(autoincrement())
+  name     String
+  brand_id Int
+  Brand    Brand    @relation(fields: [brand_id], references: [id])
+  @@map("Model")
+}
+
+model Car {
+  id       Int      @id @default(autoincrement())
+  color    String
+  year     Int
+  model_id Int
+  Model    Model    @relation(fields: [model_id], references: [id])
+  @@map("Car")
+}
+
+model CreditCard_Type {
+  id    Int     @id @default(autoincrement())
+  name  String
+  @@map("CreditCard_Type")
+}
+
+model Sale {
+  id                 Int             @id @default(autoincrement())
+  car_id             Int
+  customer_id        Int
+  credit_card_type_id Int
+  Car                Car             @relation(fields: [car_id], references: [id])
+  Customer           Customer        @relation(fields: [customer_id], references: [id])
+  CreditCard_Type    CreditCard_Type @relation(fields: [credit_card_type_id], references: [id])
+  @@map("Sale")
+}
