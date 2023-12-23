@@ -1,6 +1,6 @@
 import xml.etree.ElementTree as ET
 from entities.brand import Brand
-from lxml import etree
+from xml.etree import ElementTree as etree
 
 class CarModel:
 

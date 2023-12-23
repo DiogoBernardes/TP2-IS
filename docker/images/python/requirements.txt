@@ -5,3 +5,4 @@ watchdog==3.0.0
 pandas==2.1.4
 flask==3.0.0
 flask-magql==1.0.0
+flask-cors

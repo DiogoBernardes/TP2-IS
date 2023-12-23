@@ -1,16 +1,16 @@
 import csv
 import xml.dom.minidom as md
 import xml.etree.ElementTree as ET
-from lxml import etree
+from xml.etree import ElementTree as etree
 
 from utils.reader import CSVReader
-from daemon.importer.entities.brand import Brand
-from daemon.importer.entities.car_model import CarModel
-from daemon.importer.entities.car import Car
-from daemon.importer.entities.card import CreditCard
-from daemon.importer.entities.country import Country
-from daemon.importer.entities.customer import Customer
-from daemon.importer.entities.sales import Sale
+from entities.brand import Brand
+from entities.car_model import CarModel
+from entities.car import Car
+from entities.card import CreditCard
+from entities.country import Country
+from entities.customer import Customer
+from entities.sales import Sale
 
 
 class CSVtoXMLConverter:
@@ -89,13 +89,13 @@ class CSVtoXMLConverter:
 
     def to_xml_str(self, file_path, xsd_path=None):
         xml_tree = self.to_xml()
-       
+    
         if xsd_path:
-            xml_str = etree.tostring(xml_tree, pretty_print=True, encoding='utf-8').decode('utf-8')
+            xml_str = etree.tostring(xml_tree, encoding='utf-8').decode('utf-8')
             try:
                 if self.validate_xml_with_xsd(xml_str, xsd_path):
                     with open(file_path, 'wb') as file:
-                        file.write(etree.tostring(xml_tree, pretty_print=True, encoding='utf-8'))
+                        file.write(xml_str.encode('utf-8'))
 
                     success_message = f"Validação bem sucedida! O arquivo '{file_path}' foi criado com sucesso."
                     print(success_message)
@@ -109,7 +109,7 @@ class CSVtoXMLConverter:
                 print(error_message)
                 return None
         else:
-            xml_str = etree.tostring(xml_tree, pretty_print=True, encoding='utf-8').decode('utf-8')
+            xml_str = etree.tostring(xml_tree, encoding='utf-8').decode('utf-8')
             return xml_str, None
 
     def validate_xml_with_xsd(self, xml_str, xsd_path):

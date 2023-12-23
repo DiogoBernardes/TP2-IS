@@ -2,7 +2,7 @@ import xml.etree.ElementTree as ET
 from entities.car import Car
 from entities.card import CreditCard
 from entities.customer import Customer
-from lxml import etree
+from xml.etree import ElementTree as etree
 
 class Sale:
 

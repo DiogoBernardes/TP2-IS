@@ -6,7 +6,7 @@ class Database:
         self.cursor = None
         self.user ="is"
         self.password = "is"
-        self.host = "is-db"
+        self.host = "db-xml"
         self.port = "5432"
         self.database = "is"
         

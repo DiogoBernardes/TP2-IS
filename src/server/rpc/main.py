@@ -1,4 +1,4 @@
-import signal, sys
+import signal, sys, logging
 from xmlrpc.server import SimpleXMLRPCServer
 from xmlrpc.server import SimpleXMLRPCRequestHandler
 
@@ -6,20 +6,23 @@ from functions.queries import fetch_car_models,fetch_brands,sales_per_country, n
 
 PORT = int(sys.argv[1]) if len(sys.argv) >= 2 else 9000
 
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 if __name__ == "__main__":
     class RequestHandler(SimpleXMLRPCRequestHandler):
         rpc_paths = ('/RPC2',)
+        allow_headers = ['Content-Type']
+        allow_methods = ['POST', 'GET']
 
-    with SimpleXMLRPCServer(('localhost', PORT), requestHandler=RequestHandler) as server:
+    with SimpleXMLRPCServer(('0.0.0.0', PORT), requestHandler=RequestHandler) as server:
         server.register_introspection_functions()
 
         def signal_handler(signum, frame):
-            print("received signal")
+            logger.info("Received signal. Shutting down the server gracefully.")
             server.server_close()
-
-            # perform clean up, etc. here...
-            print("exiting, gracefully")
+            logger.info("Server shutdown complete.")
             sys.exit(0)
+          
 
         # signals
         signal.signal(signal.SIGTERM, signal_handler)
@@ -41,4 +44,5 @@ if __name__ == "__main__":
         
         # start the server
         print(f"Starting the RPC Server in port {PORT}...")
+        logger.info(f"Starting the RPC Server on port {PORT}...")
         server.serve_forever()

@@ -1,24 +1,25 @@
 from models.database import Database
-
-
-
+import logging
 db = Database()
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 def index():
     result = db.selectAll(
-        "SELECT id, file_name, xml, created_on, updated_on FROM public.documents WHERE deleted_on IS NULL")
+        "SELECT id, file_name, xml, created_on, updated_on FROM imported_documents WHERE deleted_on IS NULL")
 
     return result
 
 
 
-def fetch_brands(filename):
+def fetch_brands():
+    logger.info("Fetching brands...")
     results = db.selectAll(
-        "SELECT unnest(xpath('//Brand/@name', xml)) as brand_name FROM public.documents WHERE file_name = %s AND deleted_on IS NULL", (filename,))
+        "SELECT unnest(xpath('//Brand/@name', xml)) as brand_name FROM imported_documents WHERE deleted_on IS NULL")
     
     brands = [result[0] for result in results]
     sorted_brands = sorted(brands)
-    
+    logger.info("Result from database: %s", str(sorted_brands))
     return sorted_brands
 
 def fetch_car_models(filename, brand_name):
