@@ -11,7 +11,6 @@ import {
   Select,
 } from "@mui/material";
 import useAPI from "../Hooks/useAPI";
-// ... (imports)
 
 function FetchBrands() {
   const { GET } = useAPI();

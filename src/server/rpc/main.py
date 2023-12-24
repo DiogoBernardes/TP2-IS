@@ -11,8 +11,6 @@ logger = logging.getLogger(__name__)
 if __name__ == "__main__":
     class RequestHandler(SimpleXMLRPCRequestHandler):
         rpc_paths = ('/RPC2',)
-        allow_headers = ['Content-Type']
-        allow_methods = ['POST', 'GET']
 
     with SimpleXMLRPCServer(('0.0.0.0', PORT), requestHandler=RequestHandler) as server:
         server.register_introspection_functions()
