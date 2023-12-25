@@ -3,6 +3,6 @@ import {People} from "@mui/icons-material";
 
 const LINKS = [
     {text: 'Home', href: '/', icon: HomeIcon},
-    {text: 'Top Teams', href: '/top_teams', icon: People }
+    {text: 'Brands', href: '/brands', icon: People }
 ];
 export default LINKS;

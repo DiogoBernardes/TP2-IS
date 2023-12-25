@@ -4,7 +4,7 @@ CREATE TABLE public.imported_documents (
 	xml             XML NOT NULL,
 	created_on      TIMESTAMP NOT NULL DEFAULT NOW(),
 	updated_on      TIMESTAMP NOT NULL DEFAULT NOW(),
-  deleted_on      TIMESTAMP NOT NULL DEFAULT NOW()
+    deleted_on      TIMESTAMP
 );
 
 CREATE TABLE public.converted_documents (
