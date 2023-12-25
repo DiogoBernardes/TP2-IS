@@ -1,10 +1,6 @@
 import axios from "axios";
 import { API_PROC_URL } from "../Utils/constants";
 
-if (!API_PROC_URL) {
-  console.error("REACT_APP_API_PROC_URL não definido no ambiente.");
-}
-
 export default (URL = API_PROC_URL) => {
   const options = {
     headers: {
