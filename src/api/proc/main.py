@@ -35,21 +35,23 @@ def fetch_brands():
     
 
 @app.route('/api/models', methods=['GET'])
-def fetch_car_models():
+def get_models():
+    brand_name = request.args.get('brandName')
     server = ServerProxy("http://rpc-server:9000")
     
     try:
-        return server.fetch_car_models()
+        return server.fetch_car_models(brand_name)
     except Exception as e:
         print(e)
-        return[]
+        return []
+
     
 @app.route('/api/perCountry', methods=['GET'])
 def fetch_per_country():
     server = ServerProxy("http://rpc-server:9000")
     
     try:
-        return server.fetch_per_country()
+        return server.sales_per_country()
     except Exception as e:
         print(e)
         return[]
