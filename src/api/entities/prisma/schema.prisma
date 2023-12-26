@@ -11,8 +11,9 @@ datasource db {
 }
 
 model Country {
-  id    Int     @id @default(autoincrement())
-  name  String
+  id       Int       @id @default(autoincrement())
+  name     String
+  Customer Customer[] @relation("Country")
   @@map("Country")
 }
 
@@ -21,13 +22,15 @@ model Customer {
   first_name String
   last_name  String
   country_id Int
-  Country    Country  @relation(fields: [country_id], references: [id])
+  Country    Country  @relation("Country", fields: [country_id], references: [id])
+  Sale       Sale[]   @relation("Customer")
   @@map("Customer")
 }
 
 model Brand {
   id    Int     @id @default(autoincrement())
   name  String
+  Model Model[] @relation("Brand")
   @@map("Brand")
 }
 
@@ -35,7 +38,8 @@ model Model {
   id       Int      @id @default(autoincrement())
   name     String
   brand_id Int
-  Brand    Brand    @relation(fields: [brand_id], references: [id])
+  Brand    Brand    @relation("Brand", fields: [brand_id], references: [id])
+  Car      Car[]    @relation("Model")
   @@map("Model")
 }
 
@@ -44,13 +48,15 @@ model Car {
   color    String
   year     Int
   model_id Int
-  Model    Model    @relation(fields: [model_id], references: [id])
+  Model    Model    @relation("Model", fields: [model_id], references: [id])
+  Sale     Sale[]   @relation("Car")
   @@map("Car")
 }
 
 model CreditCard_Type {
-  id    Int     @id @default(autoincrement())
-  name  String
+  id   Int      @id @default(autoincrement())
+  name String
+  Sale Sale[]   @relation("CreditCard_Type")
   @@map("CreditCard_Type")
 }
 
@@ -59,8 +65,8 @@ model Sale {
   car_id             Int
   customer_id        Int
   credit_card_type_id Int
-  Car                Car             @relation(fields: [car_id], references: [id])
-  Customer           Customer        @relation(fields: [customer_id], references: [id])
-  CreditCard_Type    CreditCard_Type @relation(fields: [credit_card_type_id], references: [id])
+  Car                Car             @relation("Car", fields: [car_id], references: [id])
+  Customer           Customer        @relation("Customer", fields: [customer_id], references: [id])
+  CreditCard_Type    CreditCard_Type @relation("CreditCard_Type", fields: [credit_card_type_id], references: [id])
   @@map("Sale")
 }
