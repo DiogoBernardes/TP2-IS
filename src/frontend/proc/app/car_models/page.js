@@ -26,8 +26,6 @@ function FetchCarModels() {
   };
 
   const fetchModels = () => {
-    const url = `/models?brandName=${encodeURIComponent(brandInput)}`;
-    console.log("URL da requisição:", url);
     if (brandInput) {
       setLoading(true);
       GET(`/models?brandName=${encodeURIComponent(brandInput)}`)

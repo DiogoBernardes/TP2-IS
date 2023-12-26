@@ -51,7 +51,7 @@ def fetch_per_country():
     server = ServerProxy("http://rpc-server:9000")
     
     try:
-        return server.fetch_per_country()
+        return server.sales_per_country()
     except Exception as e:
         print(e)
         return[]

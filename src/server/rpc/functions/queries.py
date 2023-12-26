@@ -31,20 +31,18 @@ def fetch_car_models(brand_name):
 
     return sorted_models
 
-def sales_per_country(filename):
+def sales_per_country():
     sales_country_refs_query = """
         SELECT unnest(xpath('//Sale/Customer/@country_ref', xml)) as country_ref
-        FROM public.documents
-        WHERE file_name = %s AND deleted_on IS NULL
+        FROM imported_documents WHERE deleted_on IS NULL
     """
-    sales_country_refs = db.selectAll(sales_country_refs_query, (filename,))
+    sales_country_refs = db.selectAll(sales_country_refs_query)
 
     country_names_query = """
         SELECT unnest(xpath('//Country/@name', xml)) as country_name
-        FROM public.documents
-        WHERE file_name = %s AND deleted_on IS NULL
+        FROM imported_documents WHERE deleted_on IS NULL
     """
-    country_names = db.selectAll(country_names_query, (filename,))
+    country_names = db.selectAll(country_names_query)
 
     country_sales = {}
     for country_ref in sales_country_refs:
