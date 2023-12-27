@@ -7,8 +7,9 @@ import { CountryModule } from './country/country.module';
 import { CustomerModule } from './customer/customer.module';
 import { CarModule } from './car/car.module';
 import { CreditCardTypeModule } from './creditCard/creditCard_Type.module';
+import { SaleModule } from './sale/sale.module';
 @Module({
-  imports: [BrandsModule, ModelModule, CountryModule, CustomerModule,CarModule,CreditCardTypeModule],
+  imports: [BrandsModule, ModelModule, CountryModule, CustomerModule, CarModule, CreditCardTypeModule, SaleModule],
   controllers: [AppController],
   providers: [AppService],
 })
