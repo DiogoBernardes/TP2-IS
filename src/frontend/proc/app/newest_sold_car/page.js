@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import useAPI from "../Hooks/useAPI";
 
-function OldestSoldCar() {
+function NewestSoldCar() {
   const { GET } = useAPI();
   const [carData, setCarData] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -62,4 +62,4 @@ function OldestSoldCar() {
   );
 }
 
-export default OldestSoldCar;
+export default NewestSoldCar;

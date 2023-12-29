@@ -57,7 +57,7 @@ def fetch_per_country():
         return[]
     
 @app.route('/api/oldestCarSold', methods=['GET'])
-def oldest_sold_car_details():
+def get_oldest_sold_car_details():
     server = ServerProxy("http://rpc-server:9000")
     
     try:
