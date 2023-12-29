@@ -15,7 +15,7 @@ function NewestSoldCar() {
 
   useEffect(() => {
     setLoading(true);
-    GET('/oldestCarSold')
+    GET('/newestCarSold')
       .then((result) => {
         if (result.data) {
           setCarData(result.data);
@@ -34,7 +34,7 @@ function NewestSoldCar() {
 
   return (
     <>
-      <h1>Oldest Sold Car Details</h1>
+      <h1>Newest Sold Car Details</h1>
       <Container
         maxWidth="100%"
         sx={{

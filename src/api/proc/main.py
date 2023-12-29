@@ -67,7 +67,7 @@ def get_oldest_sold_car_details():
         return[]
     
 @app.route('/api/newestCarSold', methods=['GET'])
-def newest_sold_car_details():
+def get_newest_sold_car_details():
     server = ServerProxy("http://rpc-server:9000")
     
     try:
