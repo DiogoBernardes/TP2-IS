@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "node server.js",
-    "start": "PORT=$WEB_PORT node server.js",
+    "dev": "next dev",
+    "start": "PORT=$WEB_PORT react-scripts start",
     "build": "react-scripts build",
     "eject": "react-scripts eject"
   },
