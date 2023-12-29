@@ -4,74 +4,37 @@ import React, { useEffect, useState } from "react";
 import {
   Box,
   Container,
-  FormControl,
   CircularProgress,
-  InputLabel,
-  MenuItem,
-  TextField,
-  Button,
-  Select,
 } from "@mui/material";
 import useAPI from "../Hooks/useAPI";
 
 function OldestSoldCar() {
   const { GET } = useAPI();
-
-  const [brandInput, setBrandInput] = useState("");
-  const [procData, setProcData] = useState(null);
+  const [carData, setCarData] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const handleBrandInputChange = (event) => {
-    setBrandInput(event.target.value);
-  };
-
-  const fetchModels = () => {
-    if (brandInput) {
-      setLoading(true);
-      GET(`/models?brandName=${encodeURIComponent(brandInput)}`)
-        .then((result) => {
-          setProcData(result.data);
-          setLoading(false);
-        })
-        .catch(() => {
-          setProcData([]);
-          setLoading(false);
-        });
-    }
-  };
-
+  useEffect(() => {
+    setLoading(true);
+    GET('/oldestCarSold')
+      .then((result) => {
+        if (result.data) {
+          setCarData(result.data);
+        } else {
+          setCarData(null);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+        setCarData(null);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, []);
 
   return (
     <>
-      <h1>Fetch Car Models</h1>
-
-      <Container
-        maxWidth="100%"
-        sx={{
-          backgroundColor: "background.default",
-          padding: "2rem",
-          borderRadius: "1rem",
-        }}
-      >
-        <Box>
-          <h2 style={{ color: "white" }}>Enter Brand Name</h2>
-          <TextField
-            fullWidth
-            label="Brand Name"
-            value={brandInput}
-            onChange={handleBrandInputChange}
-          />
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={fetchModels}
-            sx={{ marginTop: 2 }}
-          >
-            Fetch Models
-          </Button>
-        </Box>
-      </Container>
-
+      <h1>Oldest Sold Car Details</h1>
       <Container
         maxWidth="100%"
         sx={{
@@ -85,12 +48,12 @@ function OldestSoldCar() {
         <h2>Results <small>(PROC)</small></h2>
         {loading ? (
           <CircularProgress />
-        ) : procData && procData.length > 0 ? (
-          <ul>
-            {procData.map((model, index) => (
-              <li key={index}>{model}</li>
+        ) : carData ? (
+          <Box>
+            {Object.entries(carData).map(([key, value]) => (
+              <p key={key}>{`${key}: ${value}`}</p>
             ))}
-          </ul>
+          </Box>
         ) : (
           <p>No data available</p>
         )}

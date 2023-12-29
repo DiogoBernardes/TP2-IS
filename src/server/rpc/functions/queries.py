@@ -53,15 +53,15 @@ def sales_per_country():
     sorted_sales = dict(sorted(country_sales.items(), key=lambda item: item[1], reverse=True))
     return sorted_sales
     
-def oldest_sold_car_details(filename):
-    brand_names_query = "SELECT unnest(xpath('//Brand/@name', xml)) as brand_name FROM public.documents WHERE file_name = %s AND deleted_on IS NULL"
-    brand_names = {i+1: name[0] for i, name in enumerate(db.selectAll(brand_names_query, (filename,)))}
+def oldest_sold_car_details():
+    brand_names_query = "SELECT unnest(xpath('//Brand/@name', xml)) as brand_name FROM imported_documents WHERE deleted_on IS NULL"
+    brand_names = {i+1: name[0] for i, name in enumerate(db.selectAll(brand_names_query))}
 
-    model_names_query = "SELECT unnest(xpath('//Model/@name', xml)) as model_name FROM public.documents WHERE file_name = %s AND deleted_on IS NULL"
-    model_names = {i+1: name[0] for i, name in enumerate(db.selectAll(model_names_query, (filename,)))}
+    model_names_query = "SELECT unnest(xpath('//Model/@name', xml)) as model_name FROM imported_documents WHERE deleted_on IS NULL"
+    model_names = {i+1: name[0] for i, name in enumerate(db.selectAll(model_names_query))}
 
-    country_names_query = "SELECT unnest(xpath('//Country/@name', xml)) as country_name FROM public.documents WHERE file_name = %s AND deleted_on IS NULL"
-    country_names = {i+1: name[0] for i, name in enumerate(db.selectAll(country_names_query, (filename,)))}
+    country_names_query = "SELECT unnest(xpath('//Country/@name', xml)) as country_name FROM imported_documents WHERE deleted_on IS NULL"
+    country_names = {i+1: name[0] for i, name in enumerate(db.selectAll(country_names_query))}
 
     car_sales_query = """
         SELECT 
@@ -73,10 +73,10 @@ def oldest_sold_car_details(filename):
             unnest(xpath('//Sale/Customer/@last_name', xml)) as last_name,
             unnest(xpath('//Sale/Customer/@country_ref', xml)) as country_ref,
             unnest(xpath('//Sale/CreditCard_Type/@name', xml)) as credit_card
-        FROM public.documents
-        WHERE file_name = %s AND deleted_on IS NULL
+        FROM imported_documents
+        WHERE deleted_on IS NULL
     """
-    car_sales = db.selectAll(car_sales_query, (filename,))
+    car_sales = db.selectAll(car_sales_query)
 
     oldest_car = None
     oldest_year = float('inf')
