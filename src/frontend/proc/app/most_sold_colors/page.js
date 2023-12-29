@@ -10,22 +10,22 @@ import useAPI from "../Hooks/useAPI";
 
 function MostSoldColors() {
   const { GET } = useAPI();
-  const [carData, setCarData] = useState(null);
+  const [colorData, setColorData] = useState(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setLoading(true);
-    GET('/newestCarSold')
+    GET('/mostSoldColors')
       .then((result) => {
         if (result.data) {
-          setCarData(result.data);
+          setColorData(result.data);
         } else {
-          setCarData(null);
+          setColorData(null);
         }
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
-        setCarData(null);
+        setColorData(null);
       })
       .finally(() => {
         setLoading(false);
@@ -34,7 +34,7 @@ function MostSoldColors() {
 
   return (
     <>
-      <h1>Newest Sold Car Details</h1>
+      <h1>Most Sold Car Colors</h1>
       <Container
         maxWidth="100%"
         sx={{
@@ -48,9 +48,9 @@ function MostSoldColors() {
         <h2>Results <small>(PROC)</small></h2>
         {loading ? (
           <CircularProgress />
-        ) : carData ? (
+        ) : colorData ? (
           <Box>
-            {Object.entries(carData).map(([key, value]) => (
+            {Object.entries(colorData).map(([key, value]) => (
               <p key={key}>{`${key}: ${value}`}</p>
             ))}
           </Box>

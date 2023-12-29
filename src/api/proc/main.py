@@ -77,7 +77,7 @@ def get_newest_sold_car_details():
         return[]
     
 @app.route('/api/mostSoldColors', methods=['GET'])
-def most_sold_colors():
+def get_most_sold_colors():
     server = ServerProxy("http://rpc-server:9000")
     
     try:

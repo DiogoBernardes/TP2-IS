@@ -147,13 +147,13 @@ def newest_sold_car_details():
 
     return newest_car if newest_car else None
 
-def most_sold_colors(filename):
+def most_sold_colors():
     car_colors_query = """
         SELECT unnest(xpath('//Sale/Car/@color', xml)) as car_color
-        FROM public.documents
-        WHERE file_name = %s AND deleted_on IS NULL
+        FROM imported_documents
+        WHERE deleted_on IS NULL
     """
-    car_colors = db.selectAll(car_colors_query, (filename,))
+    car_colors = db.selectAll(car_colors_query)
 
     if not car_colors:
         return None
