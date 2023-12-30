@@ -10,6 +10,7 @@ const LINKS = [
     {text: 'Newest Sold Car', href: '/newest_sold_car', icon: People },
     {text: 'Most Sold Colors', href: '/most_sold_colors', icon: People },
     {text: 'Most Sold Brands', href: '/most_sold_brands', icon: People },
-    {text: 'Most Sold Models', href: '/most_sold_models', icon: People }
+    {text: 'Most Sold Models', href: '/most_sold_models', icon: People },
+    {text: 'Car Sales Per Year', href: '/car_sales_year', icon: People }
 ];
 export default LINKS;
