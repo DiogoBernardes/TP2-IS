@@ -15,7 +15,7 @@ function MostSoldModels() {
 
   useEffect(() => {
     setLoading(true);
-    GET('/mostSoldBrands')
+    GET('/mostSoldModels')
       .then((result) => {
         if (result.data) {
           setCarData(result.data);

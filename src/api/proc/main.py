@@ -100,7 +100,7 @@ def get_most_sold_brands():
    
    
 @app.route('/api/mostSoldModels', methods=['GET'])
-def most_sold_models():
+def get_most_sold_models():
     server = ServerProxy("http://rpc-server:9000")
     
     try:

@@ -205,20 +205,20 @@ def most_sold_brands():
     else:
         return None
 
-def most_sold_models(filename):
+def most_sold_models():
     model_refs_query = """
         SELECT unnest(xpath('//Sale/Car/@model_ref', xml)) as model_ref
-        FROM public.documents
-        WHERE file_name = %s AND deleted_on IS NULL
+        FROM imported_documents
+        WHERE deleted_on IS NULL
     """
-    model_refs = db.selectAll(model_refs_query, (filename,))
+    model_refs = db.selectAll(model_refs_query)
 
     model_names_query = """
         SELECT unnest(xpath('//Model/@name', xml)) as model_name
-        FROM public.documents
-        WHERE file_name = %s AND deleted_on IS NULL
+        FROM imported_documents
+        WHERE deleted_on IS NULL
     """
-    model_names = db.selectAll(model_names_query, (filename,))
+    model_names = db.selectAll(model_names_query)
 
     if not model_refs or not model_names:
         return None
