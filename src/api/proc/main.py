@@ -112,14 +112,15 @@ def get_most_sold_models():
    
    
 @app.route('/api/carYear', methods=['GET'])
-def carYear():
+def get_car_year():
+    year = request.args.get('year')
     server = ServerProxy("http://rpc-server:9000")
     
     try:
-        return server.carYear()
+        return server.car_year(year)
     except Exception as e:
         print(e)
-        return[]
+        return []
     
    
 

@@ -238,13 +238,13 @@ def most_sold_models():
     else:
         return None
 
-def car_year(year, filename):
+def car_year(year):
     try:
-        brand_names_query = "SELECT unnest(xpath('//Brand/@name', xml)) as brand_name FROM public.documents WHERE file_name = %s AND deleted_on IS NULL"
-        brand_names = {i+1: name[0] for i, name in enumerate(db.selectAll(brand_names_query, (filename,)))}
+        brand_names_query = "SELECT unnest(xpath('//Brand/@name', xml)) as brand_name FROM imported_documents WHERE deleted_on IS NULL"
+        brand_names = {i+1: name[0] for i, name in enumerate(db.selectAll(brand_names_query))}
 
-        model_names_query = "SELECT unnest(xpath('//Model/@name', xml)) as model_name FROM public.documents WHERE file_name = %s AND deleted_on IS NULL"
-        model_names = {i+1: name[0] for i, name in enumerate(db.selectAll(model_names_query, (filename,)))}
+        model_names_query = "SELECT unnest(xpath('//Model/@name', xml)) as model_name FROM imported_documents WHERE deleted_on IS NULL"
+        model_names = {i+1: name[0] for i, name in enumerate(db.selectAll(model_names_query))}
 
         car_sales_query = f"""
             SELECT 
@@ -253,10 +253,10 @@ def car_year(year, filename):
                 unnest(xpath('//Sale[Car/@year=\"{year}\"]/Car/@color', xml)) as car_color,
                 unnest(xpath('//Sale[Car/@year=\"{year}\"]/Customer/@first_name', xml)) as first_name,
                 unnest(xpath('//Sale[Car/@year=\"{year}\"]/Customer/@last_name', xml)) as last_name
-            FROM public.documents
-            WHERE file_name = %s AND deleted_on IS NULL
+            FROM imported_documents
+            WHERE deleted_on IS NULL
         """
-        car_sales = db.selectAll(car_sales_query, (filename,))
+        car_sales = db.selectAll(car_sales_query)
 
         car_data = []
         for brand_ref, model_ref, car_color, first_name, last_name in car_sales:
