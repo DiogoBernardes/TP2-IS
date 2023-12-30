@@ -10,6 +10,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  TextField,
 } from "@mui/material";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import useApi from "../Hooks/useAPI";
@@ -33,6 +34,7 @@ export default function SalesPage() {
   const [maxDataSize, setMaxDataSize] = useState(0);
   const [customerNames, setCustomerNames] = useState([]);
   const [creditCardNames, setCreditCardNames] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const page = parseInt(searchParams.get("page")) || 1;
   const PAGE_SIZE = 10;
@@ -122,10 +124,42 @@ export default function SalesPage() {
 
   useEffect(() => {
     fetchSalesData();
-  }, [page]);
+  }, [page, searchTerm]);
+
+  const handlePageChange = (event, value) => {
+    router.push(pathname + "?" + createQueryString("page", value));
+  };
+
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value);
+  };
 
   const renderSalesRows = () => {
-    const slicedSales = sales.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+    const filteredSales = sales.filter((row) => {
+      const carId = row.car_id ? row.car_id.toString() : "";
+      const modelName = row.modelName ? row.modelName.toLowerCase() : "";
+      const brandName = row.brandName ? row.brandName.toLowerCase() : "";
+      const customerName =
+        customerNames.length > 0 ? customerNames[0].toLowerCase() : "";
+      const creditCardName =
+        creditCardNames.length > 0 ? creditCardNames[0].toLowerCase() : "";
+
+      return (
+        carId.includes(searchTerm) ||
+        modelName.includes(searchTerm) ||
+        brandName.includes(searchTerm) ||
+        customerName.includes(searchTerm) ||
+        creditCardName.includes(searchTerm) ||
+        row.id.toString().includes(searchTerm) ||
+        row.customer_id.toString().includes(searchTerm) ||
+        row.credit_card_type_id.toString().includes(searchTerm)
+      );
+    });
+
+    const slicedSales = filteredSales.slice(
+      (page - 1) * PAGE_SIZE,
+      page * PAGE_SIZE
+    );
 
     return slicedSales.map((row, index) => (
       <TableRow key={row.id}>
@@ -154,6 +188,12 @@ export default function SalesPage() {
   return (
     <>
       <h1 sx={{ fontSize: "100px" }}>Sales</h1>
+      <TextField
+        label="Search"
+        variant="outlined"
+        margin="normal"
+        onChange={handleSearchChange}
+      />
 
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
