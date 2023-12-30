@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import useApi from "../Hooks/useAPI";
+
 export default function SalesPage() {
   const api = useApi();
   const searchParams = useSearchParams();
@@ -67,6 +68,24 @@ export default function SalesPage() {
     }
   };
 
+  const fetchModelAndBrandInfo = async (carId) => {
+    try {
+      const carDetails = await api.GET(`/cars/${carId}`);
+      const modelDetails = await api.GET(`/models/${carDetails.data.model_id}`);
+      const brandDetails = await api.GET(
+        `/brands/${modelDetails.data.brand_id}`
+      );
+
+      return {
+        modelName: modelDetails.data.name,
+        brandName: brandDetails.data.name,
+      };
+    } catch (error) {
+      console.error("Error fetching model and brand info:", error);
+      throw error;
+    }
+  };
+
   const fetchSalesData = async () => {
     try {
       const response = await api.GET("/sales");
@@ -80,8 +99,23 @@ export default function SalesPage() {
       const customerNames = await fetchCustomerNames(customerIds);
       const creditCardNames = await fetchCreditCardNames(creditCardIds);
 
+      // Fetch additional information for each sale (e.g., model and brand)
+      const salesWithAdditionalInfo = await Promise.all(
+        salesData.map(async (row) => {
+          const { modelName, brandName } = await fetchModelAndBrandInfo(
+            row.car_id
+          );
+          return {
+            ...row,
+            modelName,
+            brandName,
+          };
+        })
+      );
+
       setCustomerNames(customerNames);
       setCreditCardNames(creditCardNames);
+      setSales(salesWithAdditionalInfo);
     } catch (error) {
       console.error("Error fetching sales:", error);
     }
@@ -101,6 +135,12 @@ export default function SalesPage() {
         </TableCell>
         <TableCell component="td" scope="row">
           {row.car_id}
+        </TableCell>
+        <TableCell component="td" scope="row">
+          {row.modelName || "N/A"}
+        </TableCell>
+        <TableCell component="td" scope="row">
+          {row.brandName || "N/A"}
         </TableCell>
         <TableCell component="td" scope="row">
           {customerNames[index] || "N/A"}
@@ -124,8 +164,10 @@ export default function SalesPage() {
                 ID
               </TableCell>
               <TableCell>Car ID</TableCell>
-              <TableCell>Customer Name</TableCell>
-              <TableCell>Credit Card Type Name</TableCell>
+              <TableCell>Model</TableCell>
+              <TableCell>Brand</TableCell>
+              <TableCell>Customer</TableCell>
+              <TableCell>Credit Card</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -133,7 +175,7 @@ export default function SalesPage() {
               renderSalesRows()
             ) : (
               <TableRow>
-                <TableCell colSpan={4}>
+                <TableCell colSpan={6}>
                   <CircularProgress />
                 </TableCell>
               </TableRow>
