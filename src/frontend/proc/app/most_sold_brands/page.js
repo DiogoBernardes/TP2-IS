@@ -15,7 +15,7 @@ function MostSoldBrands() {
 
   useEffect(() => {
     setLoading(true);
-    GET('/newestCarSold')
+    GET('/mostSoldBrands')
       .then((result) => {
         if (result.data) {
           setCarData(result.data);
@@ -34,7 +34,7 @@ function MostSoldBrands() {
 
   return (
     <>
-      <h1>Newest Sold Car Details</h1>
+      <h1>Most Sold Brands</h1>
       <Container
         maxWidth="100%"
         sx={{

@@ -172,20 +172,20 @@ def most_sold_colors():
     else:
         return None
 
-def most_sold_brands(filename):
+def most_sold_brands():
     brand_refs_query = """
         SELECT unnest(xpath('//Sale/Car/@brand_ref', xml)) as brand_ref
-        FROM public.documents
-        WHERE file_name = %s AND deleted_on IS NULL
+        FROM imported_documents
+        WHERE deleted_on IS NULL
     """
-    brand_refs = db.selectAll(brand_refs_query, (filename,))
+    brand_refs = db.selectAll(brand_refs_query)
 
     brand_names_query = """
         SELECT unnest(xpath('//Brand/@name', xml)) as brand_name
-        FROM public.documents
-        WHERE file_name = %s AND deleted_on IS NULL
+        FROM imported_documents
+        WHERE deleted_on IS NULL
     """
-    brand_names = db.selectAll(brand_names_query, (filename,))
+    brand_names = db.selectAll(brand_names_query)
 
     if not brand_refs or not brand_names:
         return None
