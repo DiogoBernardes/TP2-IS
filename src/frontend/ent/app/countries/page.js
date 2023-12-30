@@ -40,9 +40,7 @@ export default function CustomersPage() {
         </TableCell>
         <TableCell component="td" align="center">
           {customer.country.name}{" "}
-          {/* Assuming each customer has a country association */}
         </TableCell>
-        {/* Add more cells for additional customer details if needed */}
       </TableRow>
     ));
   };
@@ -61,7 +59,6 @@ export default function CustomersPage() {
               </TableCell>
               <TableCell>Name</TableCell>
               <TableCell align="center">Country</TableCell>
-              {/* Add more table headers for additional customer details if needed */}
             </TableRow>
           </TableHead>
           <TableBody>

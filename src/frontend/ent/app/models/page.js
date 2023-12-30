@@ -120,7 +120,7 @@ export default function ModelsPage() {
           color={"primary"}
           onChange={handlePageChange}
           page={page}
-          count={Math.ceil(maxDataSize / 10)} // PAGE_SIZE
+          count={Math.ceil(maxDataSize / 10)}
         />
       )}
     </main>

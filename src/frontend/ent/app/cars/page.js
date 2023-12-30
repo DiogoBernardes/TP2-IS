@@ -1,4 +1,3 @@
-// CarsPage.js
 "use client";
 import React, { useState, useEffect } from "react";
 import {
@@ -119,7 +118,6 @@ export default function CarsPage() {
         <TableCell component="td" align="center">
           {car.brandName}
         </TableCell>
-        {/* Adicione mais colunas conforme necessário */}
       </TableRow>
     ));
   };
@@ -147,7 +145,6 @@ export default function CarsPage() {
               <TableCell align="center">Model ID</TableCell>
               <TableCell align="center">Model Name</TableCell>
               <TableCell align="center">Brand Name</TableCell>
-              {/* Adicione mais cabeçalhos conforme necessário */}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -171,7 +168,7 @@ export default function CarsPage() {
           color={"primary"}
           onChange={handlePageChange}
           page={page}
-          count={Math.ceil(maxDataSize / 10)} // PAGE_SIZE
+          count={Math.ceil(maxDataSize / 10)}
         />
       )}
     </main>

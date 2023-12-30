@@ -99,7 +99,6 @@ export default function SalesPage() {
       const customerNames = await fetchCustomerNames(customerIds);
       const creditCardNames = await fetchCreditCardNames(creditCardIds);
 
-      // Fetch additional information for each sale (e.g., model and brand)
       const salesWithAdditionalInfo = await Promise.all(
         salesData.map(async (row) => {
           const { modelName, brandName } = await fetchModelAndBrandInfo(
