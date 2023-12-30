@@ -12,32 +12,37 @@ import {
 } from "@mui/material";
 import useApi from "../Hooks/useAPI";
 
-export default function CountriesPage() {
+export default function CustomersPage() {
   const api = useApi();
-  const [countries, setCountries] = useState([]);
+  const [customers, setCustomers] = useState([]);
 
-  const fetchCountries = async () => {
+  const fetchCustomers = async () => {
     try {
-      const response = await api.GET("/countries");
-      setCountries(response.data);
+      const response = await api.GET("/customers");
+      setCustomers(response.data);
     } catch (error) {
-      console.error("Error fetching countries:", error);
+      console.error("Error fetching customers:", error);
     }
   };
 
   useEffect(() => {
-    fetchCountries();
+    fetchCustomers();
   }, []);
 
-  const renderCountryRows = () => {
-    return countries.map((country) => (
-      <TableRow key={country.id}>
+  const renderCustomerRows = () => {
+    return customers.map((customer) => (
+      <TableRow key={customer.id}>
         <TableCell component="td" align="center">
-          {country.id}
+          {customer.id}
         </TableCell>
         <TableCell component="td" scope="row">
-          {country.name}
+          {`${customer.first_name} ${customer.last_name}`}
         </TableCell>
+        <TableCell component="td" align="center">
+          {customer.country.name}{" "}
+          {/* Assuming each customer has a country association */}
+        </TableCell>
+        {/* Add more cells for additional customer details if needed */}
       </TableRow>
     ));
   };
@@ -45,7 +50,7 @@ export default function CountriesPage() {
   return (
     <main>
       <h1>
-        <b>Countries Page</b>
+        <b>Customers Page</b>
       </h1>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -55,14 +60,16 @@ export default function CountriesPage() {
                 ID
               </TableCell>
               <TableCell>Name</TableCell>
+              <TableCell align="center">Country</TableCell>
+              {/* Add more table headers for additional customer details if needed */}
             </TableRow>
           </TableHead>
           <TableBody>
-            {countries.length > 0 ? (
-              renderCountryRows()
+            {customers.length > 0 ? (
+              renderCustomerRows()
             ) : (
               <TableRow>
-                <TableCell colSpan={2} align="center">
+                <TableCell colSpan={3} align="center">
                   <CircularProgress />
                 </TableCell>
               </TableRow>
