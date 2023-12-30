@@ -9,5 +9,6 @@ const LINKS = [
   { text: "Brands", href: "/brands", icon: Person },
   { text: "Sale", href: "/sales", icon: People },
   { text: "Countries", href: "/countries", icon: Flag },
+  { text: "Credit Cards", href: "/cards", icon: Flag },
 ];
 export default LINKS;
