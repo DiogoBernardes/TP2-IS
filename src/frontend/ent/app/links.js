@@ -5,7 +5,8 @@ import { Flag, People, Person } from "@mui/icons-material";
 
 const LINKS = [
   { text: "Home", href: "/", icon: HomeIcon },
-  { text: "Customers", href: "/customers", icon: Person },
+  { text: "Models", href: "/models", icon: Person },
+  { text: "Brands", href: "/brands", icon: Person },
   { text: "Sale", href: "/sales", icon: People },
   { text: "Countries", href: "/countries", icon: Flag },
 ];
