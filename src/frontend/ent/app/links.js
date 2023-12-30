@@ -7,6 +7,7 @@ const LINKS = [
   { text: "Home", href: "/", icon: HomeIcon },
   { text: "Models", href: "/models", icon: Person },
   { text: "Brands", href: "/brands", icon: Person },
+  { text: "Cars", href: "/cars", icon: Flag },
   { text: "Sale", href: "/sales", icon: People },
   { text: "Countries", href: "/countries", icon: Flag },
   { text: "Credit Cards", href: "/cards", icon: Flag },
