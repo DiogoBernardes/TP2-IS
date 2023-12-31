@@ -2,20 +2,24 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import {
-  Box,
   Container,
-  FormControl,
   CircularProgress,
-  InputLabel,
-  MenuItem,
-  Select,
 } from "@mui/material";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid, 
+  Tooltip, 
+  ResponsiveContainer 
+} from 'recharts';
 import useAPI from "../Hooks/useAPI";
 
 function FetchSalesPerCountry() {
   const { GET } = useAPI();
 
-  const [selectedElement, setSelectedElement] = useState("");
+  const [loading, setLoading] = useState(false); 
   const [procData, setProcData] = useState(null);
 
   useEffect(() => {
@@ -40,24 +44,33 @@ function FetchSalesPerCountry() {
     <>
       <h1>Sales per Country</h1>
       <Container
-        maxWidth="100%"
+        maxWidth="lg"
         sx={{
-          backgroundColor: "info.dark",
+          backgroundColor: "background.paper",
           padding: "2rem",
           marginTop: "2rem",
           borderRadius: "1rem",
-          color: "white",
+          boxShadow: "0 2px 4px 0 rgba(0,0,0,.2)"
         }}
       >
         <h2>Results <small>(PROC)</small></h2>
-        {procData && procData.length > 0 ? (
-          <ul>
-            {procData.map((item, index) => (
-              <li key={index}>{`${item.country}: ${item.sales}`}</li>
-            ))}
-          </ul>
-        ) : (
+        {loading ? (
           <CircularProgress />
+        ) : (
+          <ResponsiveContainer width="100%" height={400}>
+            <BarChart
+              width={500}
+              height={300}
+              data={procData}
+              margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="country" />
+              <YAxis />
+              <Tooltip />
+              <Bar dataKey="sales" fill="#8884d8" />
+            </BarChart>
+          </ResponsiveContainer>
         )}
       </Container>
     </>
