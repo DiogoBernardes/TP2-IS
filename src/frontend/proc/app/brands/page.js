@@ -2,12 +2,12 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import {
-  Box,
+  Card,
   Container,
-  FormControl,
+  CardContent,
   CircularProgress,
-  InputLabel,
-  MenuItem,
+  Typography,
+  Grid,
   Select,
 } from "@mui/material";
 import useAPI from "../Hooks/useAPI";
@@ -17,6 +17,7 @@ function FetchBrands() {
 
   const [selectedElement, setSelectedElement] = useState("");
   const [procData, setProcData] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     GET(`/brands`)
@@ -37,39 +38,26 @@ function FetchBrands() {
   }, []);
 
   return (
-    <>
-      <h1>Fetch Brands</h1>
-
-      <Container
-        maxWidth="100%"
-        sx={{
-          backgroundColor: "info.dark",
-          padding: "2rem",
-          marginTop: "2rem",
-          borderRadius: "1rem",
-          color: "white",
-        }}
-      >
-        <h2>
-          Results <small>(PROC)</small>
-        </h2>
-        {procData ? (
-          procData.length > 0 ? (
-            <ul>
-              {procData.map((data, index) => (
-                <li key={index}>{data}</li>
-              ))}
-            </ul>
-          ) : (
-            <p>No data available</p>
-          )
-        ) : selectedElement ? (
-          <CircularProgress />
-        ) : (
-          "--"
-        )}
-      </Container>
-    </>
+    <Container maxWidth="lg" sx={{ marginTop: 4 }}>
+      <Typography variant="h4" gutterBottom>Car Brands</Typography>
+      {loading ? (
+        <CircularProgress />
+      ) : (
+        <Grid container spacing={3}>
+          {procData && procData.map((brand, index) => (
+            <Grid item xs={12} sm={6} md={4} key={index}>
+              <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+                <CardContent>
+                  <Typography gutterBottom variant="h5" component="h2">
+                    {brand}
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+      )}
+    </Container>
   );
 }
 
