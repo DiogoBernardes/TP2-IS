@@ -1,101 +1,94 @@
 // ./app/top_teams/page.js
 "use client";
-import React, { useEffect, useState } from "react";
-import {
-  Box,
-  Container,
-  FormControl,
+import React, { useEffect, useState, useRef } from "react";
+import { 
+  Card,
+  CardContent,
+  Typography,
+  Grid,
   CircularProgress,
-  InputLabel,
-  MenuItem,
+  Container,
   TextField,
-  Button,
-  Select,
+  Autocomplete
 } from "@mui/material";
 import useAPI from "../Hooks/useAPI";
 
 function FetchCarModels() {
   const { GET } = useAPI();
 
-  const [brandInput, setBrandInput] = useState("");
-  const [procData, setProcData] = useState(null);
+  const [brands, setBrands] = useState([]);
+  const [selectedBrand, setSelectedBrand] = useState("");
+  const [models, setModels] = useState([]);
   const [loading, setLoading] = useState(false);
+  const fetchedBrandsRef = useRef(false);
 
-  const handleBrandInputChange = (event) => {
-    setBrandInput(event.target.value);
-  };
+  useEffect(() => {
+    if (!fetchedBrandsRef.current) {
+      const fetchBrands = async () => {
+        try {
+          const response = await GET('/brands');
+          setBrands(response.data || []);
+          fetchedBrandsRef.current = true;
+        } catch (error) {
+          console.error("Error fetching brands:", error);
+        }
+      };
 
-  const fetchModels = () => {
-    if (brandInput) {
-      setLoading(true);
-      GET(`/models?brandName=${encodeURIComponent(brandInput)}`)
-        .then((result) => {
-          setProcData(result.data);
-          setLoading(false);
-        })
-        .catch(() => {
-          setProcData([]);
-          setLoading(false);
-        });
+      fetchBrands();
+    }
+  }, [GET]);;
+
+  useEffect(() => {
+    if (selectedBrand) {
+      fetchModels(selectedBrand);
+    } else {
+      setModels([]);
+    }
+  }, [selectedBrand]);
+
+  const fetchModels = async (brandName) => {
+    setLoading(true);
+    try {
+      const response = await GET(`/models?brandName=${encodeURIComponent(brandName)}`);
+      setModels(response.data || []);
+    } catch (error) {
+      console.error("Error fetching models:", error);
+      setModels([]);
+    } finally {
+      setLoading(false);
     }
   };
 
-
   return (
-    <>
-      <h1>Fetch Car Models</h1>
-
-      <Container
-        maxWidth="100%"
-        sx={{
-          backgroundColor: "background.default",
-          padding: "2rem",
-          borderRadius: "1rem",
+    <Container maxWidth="lg" sx={{ marginTop: 4 }}>
+      <Typography variant="h4" gutterBottom>Car Models</Typography>
+      <Autocomplete
+        options={brands}
+        value={selectedBrand}
+        onChange={(event, newValue) => {
+          setSelectedBrand(newValue);
         }}
-      >
-        <Box>
-          <h2 style={{ color: "white" }}>Enter Brand Name</h2>
-          <TextField
-            fullWidth
-            label="Brand Name"
-            value={brandInput}
-            onChange={handleBrandInputChange}
-          />
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={fetchModels}
-            sx={{ marginTop: 2 }}
-          >
-            Fetch Models
-          </Button>
-        </Box>
-      </Container>
-
-      <Container
-        maxWidth="100%"
-        sx={{
-          backgroundColor: "info.dark",
-          padding: "2rem",
-          marginTop: "2rem",
-          borderRadius: "1rem",
-          color: "white",
-        }}
-      >
-        <h2>Results <small>(PROC)</small></h2>
-        {loading ? (
-          <CircularProgress />
-        ) : procData && procData.length > 0 ? (
-          <ul>
-            {procData.map((model, index) => (
-              <li key={index}>{model}</li>
-            ))}
-          </ul>
-        ) : (
-          <p>No data available</p>
+        renderInput={(params) => (
+          <TextField {...params} label="Select or Type Brand" fullWidth />
         )}
-      </Container>
-    </>
+        sx={{ mb: 3 }}
+      />
+      {loading ? (
+        <CircularProgress />
+      ) : (
+        <Grid container spacing={3}>
+          {models.map((model, index) => (
+            <Grid item xs={12} sm={6} md={4} key={index}>
+              <Card>
+                <CardContent>
+                  <Typography variant="h6">{model}</Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+      )}
+    </Container>
   );
 }
 
