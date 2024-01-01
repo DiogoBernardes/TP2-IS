@@ -2,15 +2,25 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import {
-  Box,
   Container,
   CircularProgress,
+  Typography
 } from "@mui/material";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  Legend,
+  CartesianGrid,
+  ResponsiveContainer
+} from 'recharts';
 import useAPI from "../Hooks/useAPI";
 
 function MostSoldBrands() {
   const { GET } = useAPI();
-  const [carData, setCarData] = useState(null);
+  const [brandData, setBrandData] = useState([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -18,14 +28,15 @@ function MostSoldBrands() {
     GET('/mostSoldBrands')
       .then((result) => {
         if (result.data) {
-          setCarData(result.data);
-        } else {
-          setCarData(null);
+          const chartData = Object.entries(result.data).map(([brand, sales]) => ({
+            name: brand,
+            sales: parseFloat(sales)
+          }));
+          setBrandData(chartData);
         }
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
-        setCarData(null);
       })
       .finally(() => {
         setLoading(false);
@@ -34,29 +45,24 @@ function MostSoldBrands() {
 
   return (
     <>
-      <h1>Most Sold Brands</h1>
-      <Container
-        maxWidth="100%"
-        sx={{
-          backgroundColor: "info.dark",
-          padding: "2rem",
-          marginTop: "2rem",
-          borderRadius: "1rem",
-          color: "white",
-        }}
-      >
-        <h2>Results <small>(PROC)</small></h2>
-        {loading ? (
-          <CircularProgress />
-        ) : carData ? (
-          <Box>
-            {Object.entries(carData).map(([key, value]) => (
-              <p key={key}>{`${key}: ${value}`}</p>
-            ))}
-          </Box>
-        ) : (
-          <p>No data available</p>
-        )}
+      <Typography variant="h4" gutterBottom sx={{ mt: 4, mb: 2 }}>
+        Most Sold Brands
+      </Typography>
+      <Container maxWidth="lg">
+        <ResponsiveContainer width="100%" height={400}>
+          {loading ? (
+            <CircularProgress />
+          ) : (
+            <BarChart data={brandData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Bar dataKey="sales" fill="#8884d8" />
+            </BarChart>
+          )}
+        </ResponsiveContainer>
       </Container>
     </>
   );
