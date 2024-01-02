@@ -13,6 +13,7 @@ datasource db {
 model Country {
   id       Int       @id @default(autoincrement())
   name     String
+  geom     Json?
   Customer Customer[] @relation("Country")
   @@map("Country")
 }
