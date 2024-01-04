@@ -34,7 +34,7 @@ services:
   # Container that automatically migrates data from db-xml to db-rel
   migrator:
     container_name: migrator
-    build: docker/images/python
+    build: docker/images/golang
     volumes:
       - ./src/daemon/migrator:/usr/src/app
       - ./docker/volumes/xml:/xml
@@ -176,15 +176,17 @@ services:
     environment:
       API_PORT: ${API_PORT}
 
-  # Container that runs a golang exmaple
-  golang:
-    container_name: golang
+  # Container that runs the watcher
+  watcher:
+    container_name: watcher
     build: docker/images/golang
     volumes:
-      - ./src/daemon/golang:/usr/src/app
+      - ./src/daemon/watcher:/usr/src/app
       - ./docker/volumes/xml:/xml
     environment:
       USE_DEV_MODE: ${USE_DEV_MODE}
+    depends_on:
+      - db-xml
 
   broker:
     container_name: rabbitmq
