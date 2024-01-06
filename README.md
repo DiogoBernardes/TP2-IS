@@ -1,119 +1,76 @@
-# Systems Integration Development Kit #
 
-### Introduction ###
+# RPC_Server - XML_Parsing
 
-This environment allows you to easily install the development environment and its dependencies.
-This is to be used for the 2nd project in Systems Integration course from Informatics Engineering at IPVC/ESTG.
+In this repository you will find a complex architecture (similar to the on in the image), this is the second part of a project that essentially was a data transformation tool, taking information from a CSV file, converting it into XML, and storing it in an PostGres database. The code ensures that the database table structure matches the data being inserted. It's particularly useful for converting structured data from one format (CSV) to another (XML and PostGres) for further analysis or use.
 
-### How to I setup my development environment? ###
+In this second part we've added API's, another language besides Python, Golang, frontend's, and very different features to develop even more the first project.
 
-* Install [Docker Desktop](https://www.docker.com/products/docker-desktop/)
-* Create an _.env_ file in the root folder of this codebase
-* Create the necessary Docker Images and Containers by running the following command in the project's root folder:
+
+
+
+
+
+## Functionalities
+
+- Read a CSV file containing car-related data (e.g., first name, last name, country, car brand, car model, car color, year of manufacture, credit card type).
+
+- Convert the data from the CSV file into an XML format.
+
+- Create or connect to two PostGres databases named "db-xml" and "db-rel".
+
+- The converted csv (now xml), is stored in the "db-xml", by the **Importer** container, this container does the conversion and inserts in the database, if the file already exists, it won't go again into the database. It sees the "/csv" and "/xml" folders in the project to search for the new files.
+
+- A **Watcher** using Golang, this send a notification to the broker with the filename that was **inserted** or **updated** in the _imported_documents_ table of "db-xml".
+
+- **Broker** service by RabbitMQ, serves as a notificator, it sends stores messages in queues.
+
+- **Migrator** gets the latest message in the broker queue, sees the filename that was _created / updated_. Then fetches the data from that file and uses XPath queries to migrate the data to an entity relation database (db-rel). The migration is done using an API and Prisma.
+
+- The data can be viewed in the frontend's. The first one, _frontend-proc_ uses the data from the db-xml dabatabase using the rpc-server, this is done using a Flask API. The _frontend-ent_ uses the data from the db-rel also using an Flask API. The last _frontend-gis_ uses the field _geom_ in the Country table in the db-rel database, to insert pins in a world map, of the geographic position of a Customer.
+
+
+
+
+## Running th program
+
+Create Docker Images and Containers - Navigate to the project's root folder (TP2-IS) and execute the following command:
+
 ```
-docker-compose up --build -d
-```
-* *Note:* the **-d** flag intends to launch all the containers in background. If not used, all the containers will run attached to the same process.
-* Once your are done working in the assignment, you can remove everything by running:
-```
-docker-compose down
-```
-* **NOTE:** once you run the command above, the data in the database will be reset if not stored in a volume. Consider stopping the container instead, if you want to keep the data.
-```
-# stops all the containers
-docker-compose stop
-
-# restarts all the containers 
-docker-compose start
+  docker-compose up --build -d
 ```
 
-### Docker Images ###
+That command will create and start up the enviroment we will be working in.
+Then we will need to install the project dependencies, this going to two folders, they are: 
 
-#### PostgreSQL Database (xml) ####
+- TP2-IS
 
-* Available at localhost:10001 or db-xml:5432 within docker virtual network
-  * **username**: is
-  * **password**: is
-  * **database**: is
+- TP2-IS\src\api\entities
 
-#### PostgreSQL Database (rel) ####
+And run the following command:
 
-* Available at localhost:10002 or db-rel:5432 within docker virtual network
-* This database also installs PostGIS to allow for dealing with the geographical data
-  * **username**: is
-  * **password**: is
-  * **database**: is
-
-#### Python + node.js ####
-
-* Python with pip
-* node.js + nodemon (that can be used to easily reload apps)
-* You can add additional pre-installed packages to the **_requirements.txt_** file. Remember that if you add any dependency, you will have to rebuild the Docker images again.
-* The entrypoint of the container is the bash script named **run.sh**.
-* You can easily use this python environment by opening up a terminal with the following command.
 ```
-docker-compose run <name of the container that uses this image> /bin/bash
+    npm install
 ```
-* You can also run directly a Python script as follows. 
-```
-docker-compose run --rm <name of the container that uses this image> python db-access/main.py
-```
-* Every time you use the command **_docker-compose run_**, a new unnamed container will be created. The **_--rm flag_** will automatically remove the created container once the run is over.
-* Please consider that if you use **docker-compose run**, the bash script **run.sh** needs to be run manually in order to execute the application
 
-### Architecture ###
+If you want to see the results in docker you have the links where you can see every frontend.
+## Stacks
+![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)
+![Flask](https://img.shields.io/badge/flask-%23000.svg?style=for-the-badge&logo=flask&logoColor=white)
+![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E)
+![Python](https://img.shields.io/badge/Python-14354C?style=for-the-badge&logo=python&logoColor=white)
+![PostGres](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
+![Vscode](https://img.shields.io/badge/Vscode-007ACC?style=for-the-badge&logo=visual-studio-code&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
+![Prisma](https://img.shields.io/badge/Prisma-3982CE?style=for-the-badge&logo=Prisma&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2CA5E0?style=for-the-badge&logo=docker&logoColor=white)
+![Golang](https://img.shields.io/badge/Go-00ADD8?style=for-the-badge&logo=go&logoColor=white)
+![NestJS](https://img.shields.io/badge/nestjs-%23E0234E.svg?style=for-the-badge&logo=nestjs&logoColor=white)
+![GraphQL](https://img.shields.io/badge/-GraphQL-E10098?style=for-the-badge&logo=graphql&logoColor=white)
+# Authors
+- [@RafaelAndré](https://github.com/kromenz) - 28234
+- [@DiogoBernardes](https://github.com/DiogoBernardes) - 27984
+- [@SérgioBarbosa](https://github.com/kromenz) - 26211
+- [GithubRepo](https://github.com/DiogoBernardes/TP2-IS)
+#### _Engenharia Informática @ipvc/estg, 2023-2024_ ####
 
-![alt text](architecture.png)
-
-#### Containers ####
-
-##### *pg-xml* #####
-Database where the xml and csv converted files are stored.
-
-##### *pg-rel* #####
-Database where the relational data is stored, namely the entities of the system.
-
-##### *importer* #####
-Daemon-type application, which runs in the background. The application must constantly look for new CSV files in the Docker csv volume and start converting to XML and then migrating to the pg-xml database.
-
-##### *migrater* #####
-Daemon-type application, which runs in the background and is started every 5 mins (configurable). The application will check if there are new files in the imported_documents table of the pg-xml and perform the migration of the XML data to the pg-rel database tables, using the api-entities API.
-
-##### *update-gis* #####
-Daemon-type application, which runs in the background and is started every 5 mins (configurable). The application will select up to 100 entities from the pg-rel database for which it is necessary to update or obtain GPS coordinates. As with TP1, the coordinates can be obtained using Nominatim's Search API, with the already existing HTTP Requests module in Python.
-
-##### *api-entities* #####
-Web REST API in Django that allows performing CRUD of all entities. 
-
-##### *api-gis* #####
-Web REST API in Django that allows obtaining geographical data by region.
-
-##### *api-proc* #####
-Web REST API in Django that allows for reporting. Obtains the data from the RPC Server. 
-
-##### *api-graphql* #####
-Web GraphQL API that allows for reporting. Obtains the data from the Entities API.
-
-##### *frontend-ent* #####
-Web frontend application that allows consulting the entities' data.
-
-##### *frontend-gis* #####
-Web frontend application based in Leaflet that allows consulting the entities in a map.
-
-##### *frontend-proc* #####
-Web frontend application that allows consulting the reports of the system.
-
-##### *rpc-server* #####
-RPC application that does reporting over the XML database. 
-
-#### Volumes ####
-
-##### *csv* #####
-Place where we can drop CSVs to be imported by the system.
-
-##### *shared* #####
-Generic volume that can be used for any purpose, to help out developing the other containers.
-
-___
-#### _Informatics Engineering @ipvc/estg, 2023-2024_ ####
-###### _Professors: Jorge Ribeiro and Luís Teófilo_ ######

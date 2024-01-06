@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"os/signal"
+	"strconv"
 	"strings"
 	"syscall"
 	"time"
@@ -31,12 +32,17 @@ const (
 	//API's
 	apiCountriesCreate	=	"http://api-entities:8080/countries/create"
 	apiCountriesDel		=	"http://api-entities:8080/countries/delete-all"
+
 	apiBrandsCreate		=	"http://api-entities:8080/brands/create"
-	apiBrandsDel		=	"http://api-entities:8080/brands/delete-all"
+	apiBrandsDel		=	"http://api-entities:8080/brands/delete-all"	
+
 	apiModelsCreate		=	"http://api-entities:8080/models/create"
 	apiModelsDel		=	"http://api-entities:8080/models/delete-all"
+
 	apiCardsCreate		=	"http://api-entities:8080/credit-card-types/create"
 	apiCardsDel			=	"http://api-entities:8080/credit-card-types/delete-all"
+
+	
 )
 
 type Message struct {
@@ -300,12 +306,6 @@ func migrateCreditCard(fileName string, xmlContent string) error {
 
 func migrateBrandsAndModels(fileName string, xmlContent string) error {
 
-	err := deleteAndCheck(apiBrandsDel)
-	if err != nil {
-		log.Printf("Erro ao limpar dados das marcas: %s\n", err)
-		return err
-	}
-
 	doc, err := xmlquery.Parse(strings.NewReader(xmlContent))
 	if err != nil {
 		return err
@@ -320,7 +320,6 @@ func migrateBrandsAndModels(fileName string, xmlContent string) error {
 	for _, brand := range brands {
 		var brandID, brandName string
 
-		// Obter o ID e o nome da marca
 		for _, attr := range brand.Attr {
 			switch attr.Name.Local {
 			case "id":
@@ -328,6 +327,12 @@ func migrateBrandsAndModels(fileName string, xmlContent string) error {
 			case "name":
 				brandName = attr.Value
 			}
+		}
+
+		// Convert brandID to integer
+		brand_id, err := strconv.Atoi(brandID)
+		if err != nil {
+			return err
 		}
 
 		// Montar o payload JSON apenas com o nome da marca
@@ -349,18 +354,13 @@ func migrateBrandsAndModels(fileName string, xmlContent string) error {
 			return err
 		}
 
+
 		log.Printf("Resposta da API Brands: Status %d\n", respBrand.StatusCode())
 
 		if respBrand.StatusCode() != 201 {
 			log.Printf("Falha ao chamar a API Brands. Status: %d\n", respBrand.StatusCode())
 			log.Printf("Corpo da resposta: %s\n", respBrand.Body())
 			return fmt.Errorf("Falha ao chamar a API Brands. Status: %d", respBrand.StatusCode())
-		}
-
-		err1 := deleteAndCheck(apiModelsDel)
-		if err1 != nil {
-			log.Printf("Erro ao limpar dados do modelo: %s\n", err1)
-			return err1
 		}
 
 		// Obter os modelos para a marca atual
@@ -377,12 +377,13 @@ func migrateBrandsAndModels(fileName string, xmlContent string) error {
 			}
 
 			// Montar o payload JSON com o nome do modelo e a referência à marca
-			modelPayload := map[string]interface{}{"name": modelName, "brand_id": brandID}
+			modelPayload := map[string]interface{}{"name": modelName, "brand_id": brand_id}
 			modelJSON, err := json.Marshal(modelPayload)
 			if err != nil {
 				return err
 			}
-
+			// Log the model payload before making the request
+			log.Printf("Model Payload: %s\n", modelJSON)
 			// Enviar solicitação para criar o modelo associado à marca
 			respModel, err := client.R().
 				SetHeader("Content-Type", "application/json").
@@ -454,11 +455,11 @@ func processMessage(body []byte) {
 		return
 	}
 
-	// err = migrateBrandsAndModels(msg.FileName, xmlContent)
-	// if err != nil {
-	// 	log.Printf("Erro ao migrar marcas e países: %s", err)
-	// 	return
-	// }
+	err = migrateBrandsAndModels(msg.FileName, xmlContent)
+	if err != nil {
+		log.Printf("Erro ao migrar marcas e países: %s", err)
+		return
+	}
 
 	log.Println("Migração concluída com sucesso")
 	
