@@ -19,6 +19,20 @@ export class CountryService {
     });
   }
 
+  async getIDByName(name: string): Promise<number | null> {
+    try {
+      const country = await this.prisma.country.findFirst({
+        where: { name },
+        select: { id: true },
+      });
+
+      return country?.id || null;
+    } catch (error) {
+      console.error(`Error in getIDByName: ${error.message}`);
+      throw error;
+    }
+  }
+
   async create(data: { name: string }): Promise<any> {
     return this.prisma.country.create({
       data,

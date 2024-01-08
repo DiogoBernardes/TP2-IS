@@ -24,6 +24,11 @@ export class CountryController {
     return this.countryService.findOne(id);
   }
 
+  @Get('by-name/:name')
+  async getCountryIDByName(@Param('name') name: string) {
+    return this.countryService.getIDByName(name);
+  }
+
   @Post('create')
   async create(@Body() data: { name: string }) {
     return this.countryService.create(data);

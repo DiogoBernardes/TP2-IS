@@ -30,8 +30,16 @@ const (
 	port		= "5432"
 
 	//API's
+	apiUrl 				=	"http://api-entities:8080"
+	create				=	"/create"
+	delete_all			=	"/delete-all"
+
 	apiCountriesCreate	=	"http://api-entities:8080/countries/create"
 	apiCountriesDel		=	"http://api-entities:8080/countries/delete-all"
+	apiCountriesByName 	= 	"http://api-entities:8080/countries/by-name"
+
+	apiCardsCreate		=	"http://api-entities:8080/credit-card-types/create"
+	apiCardsDel			=	"http://api-entities:8080/credit-card-types/delete-all"
 
 	apiBrandsCreate		=	"http://api-entities:8080/brands/create"
 	apiBrandsDel		=	"http://api-entities:8080/brands/delete-all"	
@@ -39,8 +47,8 @@ const (
 	apiModelsCreate		=	"http://api-entities:8080/models/create"
 	apiModelsDel		=	"http://api-entities:8080/models/delete-all"
 
-	apiCardsCreate		=	"http://api-entities:8080/credit-card-types/create"
-	apiCardsDel			=	"http://api-entities:8080/credit-card-types/delete-all"
+	apiCustomersCreate	=	"http://api-entities:8080/customers/create"
+	apiCustomersDel		=	"http://api-entities:8080/customers/delete-all"
 
 	
 )
@@ -141,16 +149,18 @@ func retrieveXMLContent(db *sql.DB, fileName string) (string, error) {
 
 var restyClient = resty.New()
 
-//CLEAR DB
+//CLEAR DB DATA
 func deleteAllData() error {
     
 	// Adicionar a SALE
     
 	//Adiciona a CAR
 
-	//Adicionar Customer
+	if err := deleteAndCheck(apiCustomersDel); err != nil {
+        log.Printf("Erro ao limpar dados de modelos: %s\n", err)
+        return err
+    }
 
-    // Limpar dados de modelos
     if err := deleteAndCheck(apiModelsDel); err != nil {
         log.Printf("Erro ao limpar dados de modelos: %s\n", err)
         return err
@@ -193,6 +203,33 @@ func deleteAndCheck(apiURL string) error {
 	log.Printf("Resposta API de remoção: Status %d - Sucesso\n", resp.StatusCode())
 
 	return nil
+}
+
+// GETS
+func getCountryIDByName(name string) (int, error) {
+
+    resp, err := resty.New().
+        R().
+        Get(fmt.Sprintf("%s/%s", apiCountriesByName, name))
+
+    if err != nil {
+        log.Printf("Erro ao enviar solicitação para obter o ID do país pelo nome: %s\n", err)
+        return 0, err
+    }
+
+    if resp.StatusCode() != 200 {
+        log.Printf("Falha ao chamar a API Countries por nome. Status: %d\n", resp.StatusCode())
+        return 0, fmt.Errorf("Falha ao chamar a API Countries por nome. Status: %d", resp.StatusCode())
+    }
+
+    var countryID int
+    err = json.Unmarshal(resp.Body(), &countryID)
+    if err != nil {
+        log.Printf("Erro ao decodificar a resposta do ID do país: %s\n", err)
+        return 0, err
+    }
+
+    return countryID, nil
 }
 
 // MIGRAÇÕES
@@ -416,6 +453,94 @@ func migrateBrandsAndModels(fileName string, xmlContent string) error {
 	return nil
 }
 
+func migrateCustomers(fileName string, xmlContent string) error {
+    doc, err := xmlquery.Parse(strings.NewReader(xmlContent))
+    if err != nil {
+        log.Printf("Error parsing XML: %s\n", err)
+        return err
+    }
+
+    root := xmlquery.FindOne(doc, "//Dealership")
+    if root == nil {
+        log.Println("Invalid XML format: root node not found")
+        return fmt.Errorf("Invalid XML format: root node not found")
+    }
+
+    countryIDMap := make(map[int]int)
+    countries := xmlquery.Find(doc, "//Countries/Country")
+    for _, country := range countries {
+        countryID, err := strconv.Atoi(country.SelectAttr("id"))
+        countryName := country.SelectAttr("name")
+        if err != nil || countryName == "" {
+            log.Printf("Invalid country information: %s\n", err)
+            continue
+        }
+
+        apiCountryID, err := getCountryIDByName(countryName)
+        if err != nil {
+            log.Printf("Error getting country ID by name for '%s': %s\n", countryName, err)
+            continue
+        }
+
+        countryIDMap[countryID] = apiCountryID
+    }
+
+    sales := xmlquery.Find(doc, "//Sale")
+    for _, sale := range sales {
+        customer := xmlquery.FindOne(sale, ".//Customer")
+        if customer == nil {
+            continue
+        }
+
+        firstName := customer.SelectAttr("first_name")
+        lastName := customer.SelectAttr("last_name")
+        countryRef, err := strconv.Atoi(customer.SelectAttr("country_ref"))
+        if err != nil {
+            log.Printf("Invalid country_ref for customer: %s %s\n", firstName, lastName)
+            continue
+        }
+
+        countryID, ok := countryIDMap[countryRef]
+        if !ok {
+            log.Printf("Country ID not found in the map for: %s %s\n", firstName, lastName)
+            continue
+        }
+
+        payload := map[string]interface{}{
+            "first_name": firstName,
+            "last_name":  lastName,
+            "country_id": countryID,
+        }
+
+        jsonData, err := json.Marshal(payload)
+        if err != nil {
+            log.Printf("Error marshaling customer data: %s\n", err)
+            return err
+        }
+
+        resp, err := resty.New().
+            R().
+            SetHeader("Content-Type", "application/json").
+            SetBody(jsonData).
+            Post(apiCustomersCreate)
+
+        if err != nil {
+            log.Printf("Error sending request to create customer '%s %s': %s\n", firstName, lastName, err)
+            return err
+        }
+
+        if resp.StatusCode() != 201 {
+            log.Printf("Failed to call API Customers for '%s %s'. Status: %d, Body: %s\n", firstName, lastName, resp.StatusCode(), resp.Body())
+            continue
+        }
+
+        log.Printf("Successfully created customer: %s %s\n", firstName, lastName)
+        time.Sleep(1 * time.Millisecond)
+    }
+
+    return nil
+}
+
 // função principal
 func processMessage(body []byte) {
 	var msg Message
@@ -449,17 +574,23 @@ func processMessage(body []byte) {
 		return
 	}
 
-	err = migrateCreditCard(msg.FileName, xmlContent)
-	if err != nil {
-		log.Printf("Erro ao migrar cards: %s", err)
-		return
-	}
-
-	err = migrateBrandsAndModels(msg.FileName, xmlContent)
+	err = migrateCustomers(msg.FileName, xmlContent)
 	if err != nil {
 		log.Printf("Erro ao migrar marcas e países: %s", err)
 		return
 	}
+
+	// err = migrateCreditCard(msg.FileName, xmlContent)
+	// if err != nil {
+	// 	log.Printf("Erro ao migrar cards: %s", err)
+	// 	return
+	// }
+	
+	// err = migrateBrandsAndModels(msg.FileName, xmlContent)
+	// if err != nil {
+	// 	log.Printf("Erro ao migrar marcas e países: %s", err)
+	// 	return
+	// }
 
 	log.Println("Migração concluída com sucesso")
 	
