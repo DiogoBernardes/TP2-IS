@@ -34,6 +34,13 @@ const (
 	create				=	"/create"
 	delete_all			=	"/delete-all"
 	byName				=	"/by-name"
+	countriesApi		=	"/countries"
+	carsApi				=	"/cars"
+	cardsApi			=	"/credit-card-types"
+	brandsApi			=	"/brands"
+	customersApi		=	"/customers"
+	salesApi			=	"/sales"
+	modelsApi			=	"/models"
 
 	apiCountriesCreate	=	"http://api-entities:8080/countries/create"
 	apiCountriesDel		=	"http://api-entities:8080/countries/delete-all"
@@ -56,13 +63,12 @@ const (
 	apiCarsCreate		=	"http://api-entities:8080/cars/create"
 	apiCarsDel			=	"http://api-entities:8080/cars/delete-all"
 
+	apiSalesCreate		=	"http://api-entities:8080/sales/create"
+	apiSalesDel			=	"http://api-entities:8080/sales/delete-all"
+
 )
 
 // STRUCTS
-type ModelResponse struct {
-	ModelID int `json:"modelID"`
-}
-
 type Message struct {
 	FileName  string `json:"file_name"`
 	CreatedOn string `json:"created_on"`
@@ -162,30 +168,32 @@ var restyClient = resty.New()
 //CLEAR DB DATA
 func deleteAllData() error {
     
-	// Adicionar a SALE
-    
-	if err := deleteAndCheck(apiCarsDel); err != nil {
+	if err := deleteAndCheck(apiUrl + salesApi + delete_all); err != nil {
+        log.Printf("Erro ao limpar dados de sales: %s\n", err)
+        return err
+    }
+	if err := deleteAndCheck(apiUrl + carsApi + delete_all); err != nil {
+        log.Printf("Erro ao limpar dados dos cars: %s\n", err)
+        return err
+    }
+	if err := deleteAndCheck(apiUrl + customersApi + delete_all); err != nil {
+        log.Printf("Erro ao limpar dados dos customers: %s\n", err)
+        return err
+    }
+    if err := deleteAndCheck(apiUrl + modelsApi + delete_all); err != nil {
         log.Printf("Erro ao limpar dados de modelos: %s\n", err)
         return err
     }
-	if err := deleteAndCheck(apiCustomersDel); err != nil {
-        log.Printf("Erro ao limpar dados de modelos: %s\n", err)
-        return err
-    }
-    if err := deleteAndCheck(apiModelsDel); err != nil {
-        log.Printf("Erro ao limpar dados de modelos: %s\n", err)
-        return err
-    }
-    if err := deleteAndCheck(apiBrandsDel); err != nil {
+    if err := deleteAndCheck(apiUrl + brandsApi + delete_all); err != nil {
         log.Printf("Erro ao limpar dados de marcas: %s\n", err)
         return err
     }
-    if err := deleteAndCheck(apiCountriesDel); err != nil {
+    if err := deleteAndCheck(apiUrl + countriesApi + delete_all); err != nil {
         log.Printf("Erro ao limpar dados de países: %s\n", err)
         return err
     }
-	if err := deleteAndCheck(apiCardsDel); err != nil {
-        log.Printf("Erro ao limpar dados de países: %s\n", err)
+	if err := deleteAndCheck(apiUrl + cardsApi + delete_all); err != nil {
+        log.Printf("Erro ao limpar dados dos cards: %s\n", err)
         return err
     }
 
@@ -228,14 +236,14 @@ func getCountryIDByName(name string) (int, error) {
         return 0, fmt.Errorf("Falha ao chamar a API Countries por nome. Status: %d", resp.StatusCode())
     }
 
-    var modelResponse ModelResponse
-    err = json.Unmarshal(resp.Body(), &modelResponse)
+    var countryID int
+    err = json.Unmarshal(resp.Body(), &countryID)
     if err != nil {
         log.Printf("Erro ao decodificar a resposta do ID do país: %s\n", err)
         return 0, err
     }
 
-    return modelResponse.ModelID, nil
+    return countryID, nil
 }
 
 func getModelIDByName(name string) (int, error) {
@@ -262,6 +270,56 @@ func getModelIDByName(name string) (int, error) {
     }
 
     return modelID, nil
+}
+
+func getCustomerIDByName(firstName string, lastName string) (int, error) {
+    resp, err := resty.New().
+        R().
+        Get(fmt.Sprintf("%s/customers/by-name?first_name=%s&last_name=%s", apiUrl, firstName, lastName))
+
+    if err != nil {
+        log.Printf("Erro ao enviar solicitação para obter o ID do cliente pelo nome: %s\n", err)
+        return 0, err
+    }
+
+    if resp.StatusCode() != 200 {
+        log.Printf("Falha ao chamar a API Customers por nome. Status: %d\n", resp.StatusCode())
+        return 0, fmt.Errorf("Falha ao chamar a API Customers por nome. Status: %d", resp.StatusCode())
+    }
+
+    var customerID int
+    err = json.Unmarshal(resp.Body(), &customerID)
+    if err != nil {
+        log.Printf("Erro ao decodificar a resposta do ID do cliente: %s\n", err)
+        return 0, err
+    }
+
+    return customerID, nil
+}
+
+func getCreditCardTypeIDByName(name string) (int, error) {
+    resp, err := resty.New().
+        R().
+        Get(fmt.Sprintf("%s/credit-card-types/by-name?name=%s", apiUrl, name))
+
+    if err != nil {
+        log.Printf("Erro ao enviar solicitação para obter o ID do tipo de cartão de crédito pelo nome: %s\n", err)
+        return 0, err
+    }
+
+    if resp.StatusCode() != 200 {
+        log.Printf("Falha ao chamar a API CreditCardTypes por nome. Status: %d\n", resp.StatusCode())
+        return 0, fmt.Errorf("Falha ao chamar a API CreditCardTypes por nome. Status: %d", resp.StatusCode())
+    }
+
+    var cardID int
+    err = json.Unmarshal(resp.Body(), &cardID)
+    if err != nil {
+        log.Printf("Erro ao decodificar a resposta do ID do tipo de cartão de crédito: %s\n", err)
+        return 0, err
+    }
+
+    return cardID, nil
 }
 
 // MIGRAÇÕES
@@ -614,10 +672,6 @@ doc, err := xmlquery.Parse(strings.NewReader(xmlContent))
 		modelIDMap[modelID] = apiModelID
 	}
 
-	for modelID, apiModelID := range modelIDMap {
-		log.Printf("Model ID: %d, API Model ID: %d\n", modelID, apiModelID)
-	}
-
 	sales := xmlquery.Find(doc, "//Sale")
 	for _, sale := range sales {
 		car := xmlquery.FindOne(sale, ".//Car")
@@ -676,6 +730,74 @@ doc, err := xmlquery.Parse(strings.NewReader(xmlContent))
 	return nil
 }
 
+func migrateSales(fileName string, xmlContent string) error {
+    doc, err := xmlquery.Parse(strings.NewReader(xmlContent))
+    if err != nil {
+        log.Printf("Error parsing XML: %s\n", err)
+        return err
+    }
+
+    sales := xmlquery.Find(doc, "//Dealership/sales/Sale")
+    for _, saleNode := range sales {
+        carNode := xmlquery.FindOne(saleNode, "./Car")
+        carIDStr := carNode.SelectAttr("id")
+        carID, err := strconv.Atoi(carIDStr)
+        if err != nil {
+            log.Printf("Error converting car ID to integer: %s\n", err)
+            continue
+        }
+
+        customerNode := xmlquery.FindOne(saleNode, "./Customer")
+        firstName := customerNode.SelectAttr("first_name")
+        lastName := customerNode.SelectAttr("last_name")
+        customerID, err := getCustomerIDByName(firstName, lastName)
+        if err != nil {
+            log.Printf("Error getting customer ID: %s\n", err)
+            continue
+        }
+
+        cardNode := xmlquery.FindOne(saleNode, "./CreditCard_Type")
+        cardName := cardNode.SelectAttr("name")
+        cardTypeID, err := getCreditCardTypeIDByName(cardName)
+        if err != nil {
+            log.Printf("Error getting card type ID: %s\n", err)
+            continue
+        }
+
+        salePayload := map[string]int{
+            "car_id": carID,
+            "customer_id": customerID,
+            "credit_card_type_id": cardTypeID,
+        }
+
+        jsonData, err := json.Marshal(salePayload)
+        if err != nil {
+            log.Printf("Error marshaling sale data: %s\n", err)
+            return err
+        }
+
+        resp, err := resty.New().
+            R().
+            SetHeader("Content-Type", "application/json").
+            SetBody(jsonData).
+            Post(apiUrl + salesApi + create)
+
+        if err != nil {
+            log.Printf("Error sending request to create sale: %s\n", err)
+            return err
+        }
+
+        if resp.StatusCode() != 201 {
+            log.Printf("Failed to create sale. Status: %d, Body: %s\n", resp.StatusCode(), resp.Body())
+            continue
+        }
+
+        log.Printf("Sale created successfully: %s\n", resp.Body())
+    }
+
+    return nil
+}
+
 // função principal
 func processMessage(body []byte) {
 	var msg Message
@@ -703,35 +825,55 @@ func processMessage(body []byte) {
         return
     }
 
-	// err = migrateCountry(msg.FileName, xmlContent)
-	// if err != nil {
-	// 	log.Printf("Erro ao migrar país: %s", err)
-	// 	return
-	// }
+	time.Sleep(1 * time.Millisecond)
 
-	// err = migrateCustomers(msg.FileName, xmlContent)
-	// if err != nil {
-	// 	log.Printf("Erro ao migrar marcas e países: %s", err)
-	// 	return
-	// }
+	err = migrateCountry(msg.FileName, xmlContent)
+	if err != nil {
+		log.Printf("Erro ao migrar país: %s", err)
+		return
+	}
 
-	// err = migrateCreditCard(msg.FileName, xmlContent)
-	// if err != nil {
-	// 	log.Printf("Erro ao migrar cards: %s", err)
-	// 	return
-	// }
-	
+	time.Sleep(1 * time.Millisecond)
+
+	err = migrateCustomers(msg.FileName, xmlContent)
+	if err != nil {
+		log.Printf("Erro ao migrar marcas e países: %s", err)
+		return
+	}
+
+	time.Sleep(1 * time.Millisecond)
+
+	err = migrateCreditCard(msg.FileName, xmlContent)
+	if err != nil {
+		log.Printf("Erro ao migrar cards: %s", err)
+		return
+	}
+
+	time.Sleep(1 * time.Millisecond)
+
 	err = migrateBrands(msg.FileName, xmlContent)
 	if err != nil {
 		log.Printf("Erro ao migrar marcas e modelos: %s", err)
 		return
 	}
 
-	// err = migrateCars(msg.FileName, xmlContent)
-	// if err != nil {
-	// 	log.Printf("Erro ao migrar os carros: %s", err)
-	// 	return
-	// }
+	time.Sleep(1 * time.Millisecond)
+
+	err = migrateCars(msg.FileName, xmlContent)
+	if err != nil {
+		log.Printf("Erro ao migrar os carros: %s", err)
+		return
+	}
+
+	time.Sleep(1 * time.Millisecond)
+
+	err = migrateSales(msg.FileName, xmlContent)
+	if err != nil {
+		log.Printf("Erro ao migrar os carros: %s", err)
+		return
+	}
+
+	time.Sleep(1 * time.Millisecond)
 
 	log.Println("Migração concluída com sucesso")
 	

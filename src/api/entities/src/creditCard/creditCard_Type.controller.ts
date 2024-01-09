@@ -23,6 +23,11 @@ export class CreditCardTypeController {
     return this.creditCardTypeService.findOne(id);
   }
 
+  @Get('by-name/:name')
+  async getCardIdByName(@Param('name') name: string) {
+    return this.creditCardTypeService.getCardIdByName(name);
+  }
+
   @Post('create')
   async create(@Body() data: { name: string }) {
     return this.creditCardTypeService.create(data);

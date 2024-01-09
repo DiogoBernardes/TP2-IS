@@ -23,6 +23,22 @@ export class CustomerController {
     return this.customerService.findOne(id);
   }
 
+  @Get('get-id/:firstName/:lastName')
+  async getCustomerIdByName(
+    @Param('firstName') firstName: string,
+    @Param('lastName') lastName: string,
+  ) {
+    try {
+      const customerID = await this.customerService.getCustomerIDByName(
+        firstName,
+        lastName,
+      );
+      return { customerID };
+    } catch (error) {
+      return { error: error.message };
+    }
+  }
+
   @Post('create')
   async create(
     @Body() data: { first_name: string; last_name: string; country_id: number },

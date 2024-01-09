@@ -19,6 +19,26 @@ export class CustomerService {
     });
   }
 
+  async getCustomerIDByName(
+    firstName: string,
+    lastName: string,
+  ): Promise<number | null> {
+    try {
+      const customer = await this.prisma.customer.findFirst({
+        where: {
+          first_name: firstName,
+          last_name: lastName,
+        },
+        select: { id: true },
+      });
+
+      return customer?.id || null;
+    } catch (error) {
+      console.error(`Error in getCustomerIDByName: ${error.message}`);
+      throw error;
+    }
+  }
+
   async create(data: {
     first_name: string;
     last_name: string;

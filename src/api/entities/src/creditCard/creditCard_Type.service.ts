@@ -19,6 +19,20 @@ export class CreditCardTypeService {
     });
   }
 
+  async getCardIdByName(name: string): Promise<number | null> {
+    try {
+      const card = await this.prisma.creditCard_Type.findFirst({
+        where: { name },
+        select: { id: true },
+      });
+
+      return card?.id || null;
+    } catch (error) {
+      console.error(`Error in getBrandIdByName: ${error.message}`);
+      throw error;
+    }
+  }
+
   async create(data: { name: string }): Promise<any> {
     return this.prisma.creditCard_Type.create({
       data,
