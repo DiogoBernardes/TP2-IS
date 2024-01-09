@@ -19,6 +19,20 @@ export class ModelService {
     });
   }
 
+  async getModelIDByName(name: string): Promise<number | null> {
+    try {
+      const model = await this.prisma.model.findFirst({
+        where: { name },
+        select: { id: true },
+      });
+
+      return model?.id || null;
+    } catch (error) {
+      console.error(`Error in getModelIDByName: ${error.message}`);
+      throw error;
+    }
+  }
+
   async createModel(data: { name: string; brand_id: number }): Promise<any> {
     return this.prisma.model.create({
       data,

@@ -19,6 +19,20 @@ export class BrandsService {
     });
   }
 
+  async getBrandIdByName(name: string): Promise<number | null> {
+    try {
+      const brand = await this.prisma.brand.findFirst({
+        where: { name },
+        select: { id: true },
+      });
+
+      return brand?.id || null;
+    } catch (error) {
+      console.error(`Error in getBrandIdByName: ${error.message}`);
+      throw error;
+    }
+  }
+
   async create(data: { name: string }): Promise<any> {
     return this.prisma.brand.create({
       data,

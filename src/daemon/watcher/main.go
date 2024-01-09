@@ -37,12 +37,12 @@ func connectDB() *sql.DB {
 
 	db, err := sql.Open("postgres", connStr)
 	if err != nil {
-		log.Fatal("Erro ao conectar ao banco de dados:", err)
+		log.Fatal("Erro ao conectar à bd:", err)
 	}
 
 	err = db.Ping()
 	if err != nil {
-		log.Fatal("Erro ao fazer ping no banco de dados:", err)
+		log.Fatal("Erro ao fazer ping à bd:", err)
 	}
 
 	return db

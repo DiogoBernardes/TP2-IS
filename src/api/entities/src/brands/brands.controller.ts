@@ -24,6 +24,11 @@ export class BrandsController {
     return this.brandsService.findOne(id);
   }
 
+  @Get('by-name/:name')
+  async getModelIDByName(@Param('name') name: string) {
+    return this.brandsService.getBrandIdByName(name);
+  }
+
   @Post('create')
   async create(@Body() data: { name: string }) {
     return this.brandsService.create(data);

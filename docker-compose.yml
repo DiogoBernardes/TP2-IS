@@ -30,6 +30,36 @@ services:
       NUM_XML_PARTS: ${NUM_XML_PARTS}
     depends_on:
       - db-xml
+      - watcher
+
+  # Container that runs the watcher
+  watcher:
+    container_name: watcher
+    build: docker/images/golang
+    volumes:
+      - ./src/daemon/watcher:/usr/src/app
+      - ./docker/volumes/xml:/xml
+    environment:
+      USE_DEV_MODE: ${USE_DEV_MODE}
+    depends_on:
+      - db-xml
+      - broker
+
+  broker:
+    container_name: rabbitmq
+    image: "rabbitmq:3.12.9-management-alpine"
+    environment:
+      RABBITMQ_DEFAULT_USER: "$RABBITMQ_DEFAULT_USER"
+      RABBITMQ_DEFAULT_PASS: "$RABBITMQ_DEFAULT_PASS"
+      RABBITMQ_DEFAULT_VHOST: "$RABBITMQ_DEFAULT_VHOST"
+    ports:
+      - "5672:5672" # AMQP protocol port
+      - "15672:15672" # management interface port
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping", "-q"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
   # Container that automatically migrates data from db-xml to db-rel
   migrator:
@@ -44,6 +74,7 @@ services:
     depends_on:
       - db-xml
       - db-rel
+      - broker
 
   # Container that automatically migrates data from db-xml to db-rel
   gis-updater:
@@ -139,6 +170,8 @@ services:
       USE_DEV_MODE: ${USE_DEV_MODE}
       PORT: ${API_PORT}
       DATABASE_URL: postgresql://is:is@db-rel:5432/is?schema=public
+    depends_on:
+      - db-rel
 
   # Container that runs the API for gis
   api-gis:
@@ -175,34 +208,6 @@ services:
       - "${EXT_PORT_API_GRAPHQL}:${API_PORT}"
     environment:
       API_PORT: ${API_PORT}
-
-  # Container that runs the watcher
-  watcher:
-    container_name: watcher
-    build: docker/images/golang
-    volumes:
-      - ./src/daemon/watcher:/usr/src/app
-      - ./docker/volumes/xml:/xml
-    environment:
-      USE_DEV_MODE: ${USE_DEV_MODE}
-    depends_on:
-      - db-xml
-
-  broker:
-    container_name: rabbitmq
-    image: "rabbitmq:3.12.9-management-alpine"
-    environment:
-      RABBITMQ_DEFAULT_USER: "$RABBITMQ_DEFAULT_USER"
-      RABBITMQ_DEFAULT_PASS: "$RABBITMQ_DEFAULT_PASS"
-      RABBITMQ_DEFAULT_VHOST: "$RABBITMQ_DEFAULT_VHOST"
-    ports:
-      - "5672:5672" # AMQP protocol port
-      - "15672:15672" # management interface port
-    healthcheck:
-      test: ["CMD", "rabbitmq-diagnostics", "ping", "-q"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
 
 volumes:
   xml-data:

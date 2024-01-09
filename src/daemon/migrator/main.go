@@ -33,6 +33,7 @@ const (
 	apiUrl 				=	"http://api-entities:8080"
 	create				=	"/create"
 	delete_all			=	"/delete-all"
+	byName				=	"/by-name"
 
 	apiCountriesCreate	=	"http://api-entities:8080/countries/create"
 	apiCountriesDel		=	"http://api-entities:8080/countries/delete-all"
@@ -42,16 +43,25 @@ const (
 	apiCardsDel			=	"http://api-entities:8080/credit-card-types/delete-all"
 
 	apiBrandsCreate		=	"http://api-entities:8080/brands/create"
-	apiBrandsDel		=	"http://api-entities:8080/brands/delete-all"	
+	apiBrandsDel		=	"http://api-entities:8080/brands/delete-all"
+	apiBrandsByName		=	"http://api-entities:8080/brands/by-name"	
 
 	apiModelsCreate		=	"http://api-entities:8080/models/create"
 	apiModelsDel		=	"http://api-entities:8080/models/delete-all"
+	apiModelsByName		=	"http://api-entities:8080/models/by-name"
 
 	apiCustomersCreate	=	"http://api-entities:8080/customers/create"
 	apiCustomersDel		=	"http://api-entities:8080/customers/delete-all"
 
-	
+	apiCarsCreate		=	"http://api-entities:8080/cars/create"
+	apiCarsDel			=	"http://api-entities:8080/cars/delete-all"
+
 )
+
+// STRUCTS
+type ModelResponse struct {
+	ModelID int `json:"modelID"`
+}
 
 type Message struct {
 	FileName  string `json:"file_name"`
@@ -154,30 +164,26 @@ func deleteAllData() error {
     
 	// Adicionar a SALE
     
-	//Adiciona a CAR
-
+	if err := deleteAndCheck(apiCarsDel); err != nil {
+        log.Printf("Erro ao limpar dados de modelos: %s\n", err)
+        return err
+    }
 	if err := deleteAndCheck(apiCustomersDel); err != nil {
         log.Printf("Erro ao limpar dados de modelos: %s\n", err)
         return err
     }
-
     if err := deleteAndCheck(apiModelsDel); err != nil {
         log.Printf("Erro ao limpar dados de modelos: %s\n", err)
         return err
     }
-
-	// Limpar dados de marcas
     if err := deleteAndCheck(apiBrandsDel); err != nil {
         log.Printf("Erro ao limpar dados de marcas: %s\n", err)
         return err
     }
-
-	// Limpar dados de países
     if err := deleteAndCheck(apiCountriesDel); err != nil {
         log.Printf("Erro ao limpar dados de países: %s\n", err)
         return err
     }
-
 	if err := deleteAndCheck(apiCardsDel); err != nil {
         log.Printf("Erro ao limpar dados de países: %s\n", err)
         return err
@@ -213,7 +219,7 @@ func getCountryIDByName(name string) (int, error) {
         Get(fmt.Sprintf("%s/%s", apiCountriesByName, name))
 
     if err != nil {
-        log.Printf("Erro ao enviar solicitação para obter o ID do país pelo nome: %s\n", err)
+    	log.Printf("Erro ao enviar solicitação para obter o ID do país pelo nome: %s\n", err)
         return 0, err
     }
 
@@ -222,14 +228,40 @@ func getCountryIDByName(name string) (int, error) {
         return 0, fmt.Errorf("Falha ao chamar a API Countries por nome. Status: %d", resp.StatusCode())
     }
 
-    var countryID int
-    err = json.Unmarshal(resp.Body(), &countryID)
+    var modelResponse ModelResponse
+    err = json.Unmarshal(resp.Body(), &modelResponse)
     if err != nil {
         log.Printf("Erro ao decodificar a resposta do ID do país: %s\n", err)
         return 0, err
     }
 
-    return countryID, nil
+    return modelResponse.ModelID, nil
+}
+
+func getModelIDByName(name string) (int, error) {
+
+    resp, err := resty.New().
+        R().
+        Get(fmt.Sprintf("%s/%s", apiModelsByName, name))
+
+    if err != nil {
+		log.Printf("Erro ao obter o ID do modelo pelo nome: %s\n", err)
+        return 0, err
+    }
+
+    if resp.StatusCode() != 200 {
+        log.Printf("Falha ao chamar a API Models por nome. Status: %d\n", resp.StatusCode())
+        return 0, fmt.Errorf("Falha ao chamar a API Models por nome. Status: %d", resp.StatusCode())
+    }
+
+    var modelID int
+    err = json.Unmarshal(resp.Body(), &modelID)
+    if err != nil {
+        log.Printf("Erro ao decodificar a resposta do ID do modelo: %s\n", err)
+        return 0, err
+    }
+
+    return modelID, nil
 }
 
 // MIGRAÇÕES
@@ -341,116 +373,131 @@ func migrateCreditCard(fileName string, xmlContent string) error {
 	return nil
 }
 
-func migrateBrandsAndModels(fileName string, xmlContent string) error {
+func migrateBrands(fileName string, xmlContent string) error {
+    doc, err := xmlquery.Parse(strings.NewReader(xmlContent))
+    if err != nil {
+        return err
+    }
 
-	doc, err := xmlquery.Parse(strings.NewReader(xmlContent))
-	if err != nil {
-		return err
-	}
+    root := xmlquery.FindOne(doc, "//Dealership")
+    if root == nil {
+        return fmt.Errorf("Invalid XML format: root node not found")
+    }
 
-	root := xmlquery.FindOne(doc, "//Dealership")
-	if root == nil {
-		return fmt.Errorf("Formato XML inválido: nó raiz não encontrado")
-	}
+    brands := xmlquery.Find(doc, "//Brands/Brand")
+    for _, brand := range brands {
+        var brandName string
 
-	brands := xmlquery.Find(doc, "//Brands/Brand")
-	for _, brand := range brands {
-		var brandID, brandName string
-
-		for _, attr := range brand.Attr {
-			switch attr.Name.Local {
-			case "id":
-				brandID = attr.Value
+        for _, attr := range brand.Attr {
+            switch attr.Name.Local {
 			case "name":
 				brandName = attr.Value
-			}
-		}
+            }
+        }
 
-		// Convert brandID to integer
-		brand_id, err := strconv.Atoi(brandID)
+        brandPayload := map[string]string{"name": brandName}
+        brandJSON, err := json.Marshal(brandPayload)
+        if err != nil {
+            return err
+        }
+
+        client := resty.New()
+        respBrand, err := client.R().
+            SetHeader("Content-Type", "application/json").
+            SetBody(brandJSON).
+            Post(apiBrandsCreate)
+
+        if err != nil {
+            log.Println("Error sending request to create brand:", err)
+            return err
+        }
+
+        if respBrand.StatusCode() != 201 {
+            log.Printf("Failed to call API Brands. Status: %d\n", respBrand.StatusCode())
+            log.Printf("Response Body: %s\n", respBrand.Body())
+            return fmt.Errorf("Failed to call API Brands. Status: %d", respBrand.StatusCode())
+        }
+
+        log.Printf("API Brands Response: Status %d\n", respBrand.StatusCode())
+        log.Printf("Response Body: %s\n", respBrand.Body())
+
+		respBrandID, err := resty.New().
+			R().
+			Get(fmt.Sprintf("%s/%s", apiBrandsByName, brandName))
+
 		if err != nil {
-			return err
-		}
+            log.Println("Error sending request to get brand ID:", err)
+            return err
+        }
 
-		// Montar o payload JSON apenas com o nome da marca
-		brandPayload := map[string]string{"name": brandName}
-		brandJSON, err := json.Marshal(brandPayload)
-		if err != nil {
-			return err
-		}
+        if respBrandID.StatusCode() != 200 {
+            log.Printf("Failed to call API Brands by Name. Status: %d\n", respBrandID.StatusCode())
+            log.Printf("Response Body: %s\n", respBrandID.Body())
+            return fmt.Errorf("Failed to call API Brands by Name. Status: %d", respBrandID.StatusCode())
+        }
 
-		// Enviar solicitação para criar a marca
-		client := resty.New()
-		respBrand, err := client.R().
-			SetHeader("Content-Type", "application/json").
-			SetBody(brandJSON).
-			Post(apiBrandsCreate)
+		var brandID int
+        if err := json.Unmarshal(respBrandID.Body(), &brandID); err != nil {
+            log.Println("Error parsing brand ID response:", err)
+            return err
+        }
 
-		if err != nil {
-			log.Println("Erro ao enviar solicitação para criar a marca:", err)
-			return err
-		}
+        log.Printf("API Brands by Name Response: Status %d\n", respBrandID.StatusCode())
+        log.Printf("%s : %d\n", brandName, brandID)
 
+        if err := migrateModels(brand, brandID); err != nil {
+            return err
+        }
 
-		log.Printf("Resposta da API Brands: Status %d\n", respBrand.StatusCode())
+        time.Sleep(1 * time.Millisecond)
+    }
 
-		if respBrand.StatusCode() != 201 {
-			log.Printf("Falha ao chamar a API Brands. Status: %d\n", respBrand.StatusCode())
-			log.Printf("Corpo da resposta: %s\n", respBrand.Body())
-			return fmt.Errorf("Falha ao chamar a API Brands. Status: %d", respBrand.StatusCode())
-		}
+    return nil
+}
 
-		// Obter os modelos para a marca atual
-		models := xmlquery.Find(brand, "//Models/Model")
-		for _, model := range models {
-			var modelName string
+func migrateModels(brand *xmlquery.Node, brandID int) error {
+    models := xmlquery.Find(brand, "//Models/Model")
+    for _, model := range models {
+        var modelName string
 
-			// Obter o nome do modelo
-			for _, attr := range model.Attr {
-				if attr.Name.Local == "name" {
-					modelName = attr.Value
-					break
-				}
-			}
+        for _, attr := range model.Attr {
+            if attr.Name.Local == "name" {
+                modelName = attr.Value
+                break
+            }
+        }
 
-			// Montar o payload JSON com o nome do modelo e a referência à marca
-			modelPayload := map[string]interface{}{"name": modelName, "brand_id": brand_id}
-			modelJSON, err := json.Marshal(modelPayload)
-			if err != nil {
-				return err
-			}
-			// Log the model payload before making the request
-			log.Printf("Model Payload: %s\n", modelJSON)
-			// Enviar solicitação para criar o modelo associado à marca
-			respModel, err := client.R().
-				SetHeader("Content-Type", "application/json").
-				SetBody(modelJSON).
-				Post(apiModelsCreate)
+        modelPayload := map[string]interface{}{"name": modelName, "brand_id": brandID}
+        modelJSON, err := json.Marshal(modelPayload)
+        if err != nil {
+            return err
+        }
+        log.Printf("Model Payload: %s\n", modelJSON)
 
-			if err != nil {
-				log.Println("Erro ao enviar solicitação para criar o modelo:", err)
-				return err
-			}
+        client := resty.New()
+        respModel, err := client.R().
+            SetHeader("Content-Type", "application/json").
+            SetBody(modelJSON).
+            Post(apiModelsCreate)
 
-			log.Printf("Resposta da API Models: Status %d\n", respModel.StatusCode())
+        if err != nil {
+            log.Println("Error sending request to create model:", err)
+            return err
+        }
 
-			if respModel.StatusCode() != 201 {
-				log.Printf("Falha ao chamar a API Models. Status: %d\n", respModel.StatusCode())
-				log.Printf("Corpo da resposta: %s\n", respModel.Body())
-				return fmt.Errorf("Falha ao chamar a API Models. Status: %d", respModel.StatusCode())
-			}
+        if respModel.StatusCode() != 201 {
+            log.Printf("Failed to call API Models. Status: %d\n", respModel.StatusCode())
+            log.Printf("Response Body: %s\n", respModel.Body())
+            return fmt.Errorf("Failed to call API Models. Status: %d", respModel.StatusCode())
+        }
 
-			log.Printf("Corpo da resposta: %s\n", respModel.Body())
-			// Aguardar um curto intervalo entre as criações de modelos
-			time.Sleep(1 * time.Millisecond)
-		}
+        log.Printf("API Models Response: Status %d\n", respModel.StatusCode())
+        log.Printf("Response Body: %s\n", respModel.Body())
 
-		log.Printf("Corpo da resposta: %s\n", respBrand.Body())
-		// Aguardar um curto intervalo entre as criações de marcas
-		time.Sleep(1 * time.Millisecond)
-	}
+        time.Sleep(1 * time.Millisecond)
+    }
 
-	return nil
+    return nil
 }
 
 func migrateCustomers(fileName string, xmlContent string) error {
@@ -541,6 +588,94 @@ func migrateCustomers(fileName string, xmlContent string) error {
     return nil
 }
 
+func migrateCars(fileName string, xmlContent string) error{
+doc, err := xmlquery.Parse(strings.NewReader(xmlContent))
+	if err != nil {
+		log.Printf("Error parsing XML: %s\n", err)
+		return err
+	}
+
+	modelIDMap := make(map[int]int)
+	models := xmlquery.Find(doc, "//Brands/Brand/Models/Model")
+	for _, model := range models {
+		modelID, err := strconv.Atoi(model.SelectAttr("id"))
+		modelName := model.SelectAttr("name")
+		if err != nil || modelName == "" {
+			log.Printf("Invalid model information: %s\n", err)
+			continue
+		}
+
+		apiModelID, err := getModelIDByName(modelName)
+		if err != nil {
+			log.Printf("Error getting model ID by name for '%s': %s\n", modelName, err)
+			continue
+		}
+
+		modelIDMap[modelID] = apiModelID
+	}
+
+	for modelID, apiModelID := range modelIDMap {
+		log.Printf("Model ID: %d, API Model ID: %d\n", modelID, apiModelID)
+	}
+
+	sales := xmlquery.Find(doc, "//Sale")
+	for _, sale := range sales {
+		car := xmlquery.FindOne(sale, ".//Car")
+		if car == nil {
+			log.Println("Car information not found in Sale. Skipping...")
+			continue
+		}
+
+		color := car.SelectAttr("color")
+		year, err := strconv.Atoi(car.SelectAttr("year"))
+		modelRef, err := strconv.Atoi(car.SelectAttr("model_ref"))
+		if err != nil || color == "" {
+			log.Printf("Invalid car information: %s\n", err)
+			continue
+		}
+		
+		log.Printf("model_ref: %d", modelRef)
+		modelID, ok := modelIDMap[modelRef]
+		if !ok {
+			log.Printf("Model ID not found in the map for car\n")
+			continue
+		}
+
+		payload := map[string]interface{}{
+			"color":    color,
+			"year":     year,
+			"model_id": modelID,
+		}
+
+		jsonData, err := json.Marshal(payload)
+		if err != nil {
+			log.Printf("Error marshaling car data: %s\n", err)
+			return err
+		}
+
+		resp, err := resty.New().
+			R().
+			SetHeader("Content-Type", "application/json").
+			SetBody(jsonData).
+			Post(apiCarsCreate)
+
+		if err != nil {
+			log.Printf("Error sending request to create car: %s\n", err)
+			return err
+		}
+
+		if resp.StatusCode() != 201 {
+			log.Printf("Failed to call API Cars. Status: %d, Body: %s\n", resp.StatusCode(), resp.Body())
+			continue
+		}
+
+		log.Printf("Successfully created car: %s - %d - %d\n", color, year, modelID)
+		time.Sleep(1 * time.Millisecond)
+	}
+
+	return nil
+}
+
 // função principal
 func processMessage(body []byte) {
 	var msg Message
@@ -568,17 +703,17 @@ func processMessage(body []byte) {
         return
     }
 
-	err = migrateCountry(msg.FileName, xmlContent)
-	if err != nil {
-		log.Printf("Erro ao migrar país: %s", err)
-		return
-	}
+	// err = migrateCountry(msg.FileName, xmlContent)
+	// if err != nil {
+	// 	log.Printf("Erro ao migrar país: %s", err)
+	// 	return
+	// }
 
-	err = migrateCustomers(msg.FileName, xmlContent)
-	if err != nil {
-		log.Printf("Erro ao migrar marcas e países: %s", err)
-		return
-	}
+	// err = migrateCustomers(msg.FileName, xmlContent)
+	// if err != nil {
+	// 	log.Printf("Erro ao migrar marcas e países: %s", err)
+	// 	return
+	// }
 
 	// err = migrateCreditCard(msg.FileName, xmlContent)
 	// if err != nil {
@@ -586,9 +721,15 @@ func processMessage(body []byte) {
 	// 	return
 	// }
 	
-	// err = migrateBrandsAndModels(msg.FileName, xmlContent)
+	err = migrateBrands(msg.FileName, xmlContent)
+	if err != nil {
+		log.Printf("Erro ao migrar marcas e modelos: %s", err)
+		return
+	}
+
+	// err = migrateCars(msg.FileName, xmlContent)
 	// if err != nil {
-	// 	log.Printf("Erro ao migrar marcas e países: %s", err)
+	// 	log.Printf("Erro ao migrar os carros: %s", err)
 	// 	return
 	// }
 

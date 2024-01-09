@@ -23,6 +23,11 @@ export class ModelsController {
     return this.modelService.findOneModel(id);
   }
 
+  @Get('by-name/:name')
+  async getModelIDByName(@Param('name') name: string) {
+    return this.modelService.getModelIDByName(name);
+  }
+
   @Post('create')
   async create(@Body() data: { name: string; brand_id: number }) {
     return this.modelService.createModel(data);
