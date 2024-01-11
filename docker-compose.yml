@@ -196,6 +196,8 @@ services:
       - "${EXT_PORT_API_PROC}:${API_PORT}"
     environment:
       API_PORT: ${API_PORT}
+    depends_on:
+      - rpc-server
 
   # Container that runs the API for graphql
   api-graphql:

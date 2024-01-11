@@ -104,7 +104,7 @@ func sendToBroker(fileName string, createdOn time.Time, updatedOn time.Time) {
 }
 
 func checkNewXMLFilesEvery60Seconds(db *sql.DB) {
-	fmt.Println("A verificar novos arquivos XML a cada minuto:")
+	fmt.Println("A verificar existência de novos ficheiros na db-xml a cada minuto:")
 
 	ticker := time.NewTicker(60 * time.Second)
 	defer ticker.Stop()
@@ -134,7 +134,7 @@ func checkNewXMLFilesEvery60Seconds(db *sql.DB) {
 					log.Fatal("Erro no resultado da consulta:", err)
 				}
 
-				fmt.Printf("Arquivo XML encontrado: \nNome: %s\nCriado em: %s\nAlterado a: %s\n", fileName, createdOn, updatedOn)
+				fmt.Printf("Ficheiro XML encontrado: \nNome: %s\nCriado em: %s\nAlterado a: %s\n", fileName, createdOn, updatedOn)
 
 				sendToBroker(fileName, createdOn, updatedOn)
 			}
