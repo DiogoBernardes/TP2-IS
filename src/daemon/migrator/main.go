@@ -68,11 +68,18 @@ const (
 
 )
 
+
 // STRUCTS
 type Message struct {
 	FileName  string `json:"file_name"`
 	CreatedOn string `json:"created_on"`
 	UpdatedOn string `json:"updated_on"`
+}
+
+type Model struct {
+    ID       int    `json:"id"`
+    Name     string `json:"name"`
+    BrandID  int    `json:"brand_id"`
 }
 
 func connectDB() *sql.DB {
@@ -272,10 +279,35 @@ func getModelIDByName(name string) (int, error) {
     return modelID, nil
 }
 
+func getAllModels() ([]Model, error) {
+    resp, err := resty.New().
+        R().
+        Get(fmt.Sprintf("%s/models", apiUrl))
+
+    if err != nil {
+        log.Printf("Erro ao obter todos os modelos: %s\n", err)
+        return nil, err
+    }
+
+    if resp.StatusCode() != 200 {
+        log.Printf("Falha ao chamar a API Models. Status: %d\n", resp.StatusCode())
+        return nil, fmt.Errorf("Falha ao chamar a API Models. Status: %d", resp.StatusCode())
+    }
+
+    var models []Model
+    err = json.Unmarshal(resp.Body(), &models)
+    if err != nil {
+        log.Printf("Erro ao decodificar a resposta dos modelos: %s\n", err)
+        return nil, err
+    }
+
+    return models, nil
+}
+
 func getCustomerIDByName(firstName string, lastName string) (int, error) {
     resp, err := resty.New().
         R().
-        Get(fmt.Sprintf("%s/customers/by-name?first_name=%s&last_name=%s", apiUrl, firstName, lastName))
+        Get(fmt.Sprintf("%s/customers/get-id/%s/%s", apiUrl, firstName, lastName))
 
     if err != nil {
         log.Printf("Erro ao enviar solicitação para obter o ID do cliente pelo nome: %s\n", err)
@@ -300,7 +332,7 @@ func getCustomerIDByName(firstName string, lastName string) (int, error) {
 func getCreditCardTypeIDByName(name string) (int, error) {
     resp, err := resty.New().
         R().
-        Get(fmt.Sprintf("%s/credit-card-types/by-name?name=%s", apiUrl, name))
+        Get(fmt.Sprintf("%s%s/by-name/%s", apiUrl, cardsApi, name))
 
     if err != nil {
         log.Printf("Erro ao enviar solicitação para obter o ID do tipo de cartão de crédito pelo nome: %s\n", err)
@@ -320,6 +352,51 @@ func getCreditCardTypeIDByName(name string) (int, error) {
     }
 
     return cardID, nil
+}
+
+func getCarID(color string, year string, modelRef string) (int, error) {
+
+    urlString := fmt.Sprintf("%s%s/find-by-details/%s/%s/%s", apiUrl, carsApi, color, year, modelRef)
+
+    resp, err := resty.New().
+        R().
+        Get(urlString)
+
+    if err != nil {
+        log.Printf("Erro ao obter ID do carro: %s\n", err)
+        return 0, err
+    }
+
+    if resp.StatusCode() != 200 {
+        log.Printf("Falha ao chamar a API Cars. Status: %d\n", resp.StatusCode())
+        return 0, fmt.Errorf("Falha ao chamar a API Cars. Status: %d", resp.StatusCode())
+    }
+
+    var carID int
+    err = json.Unmarshal(resp.Body(), &carID)
+    if err != nil {
+        log.Printf("Erro ao decodificar a resposta do ID do carro: %s\n", err)
+        return 0, err
+    }
+
+    return carID, nil
+}
+
+var modelsMap map[int]string
+
+func loadAllModels() error {
+    models, err := getAllModels()
+    if err != nil {
+		log.Printf("Error fetching models: %s\n", err)
+        return err
+    }
+
+    modelsMap = make(map[int]string)
+    for _, model := range models {
+        modelsMap[model.ID] = model.Name
+    }
+
+    return nil
 }
 
 // MIGRAÇÕES
@@ -647,7 +724,7 @@ func migrateCustomers(fileName string, xmlContent string) error {
 }
 
 func migrateCars(fileName string, xmlContent string) error{
-doc, err := xmlquery.Parse(strings.NewReader(xmlContent))
+	doc, err := xmlquery.Parse(strings.NewReader(xmlContent))
 	if err != nil {
 		log.Printf("Error parsing XML: %s\n", err)
 		return err
@@ -655,6 +732,7 @@ doc, err := xmlquery.Parse(strings.NewReader(xmlContent))
 
 	modelIDMap := make(map[int]int)
 	models := xmlquery.Find(doc, "//Brands/Brand/Models/Model")
+	log.Println("Models loaded:")
 	for _, model := range models {
 		modelID, err := strconv.Atoi(model.SelectAttr("id"))
 		modelName := model.SelectAttr("name")
@@ -688,7 +766,6 @@ doc, err := xmlquery.Parse(strings.NewReader(xmlContent))
 			continue
 		}
 		
-		log.Printf("model_ref: %d", modelRef)
 		modelID, ok := modelIDMap[modelRef]
 		if !ok {
 			log.Printf("Model ID not found in the map for car\n")
@@ -737,19 +814,55 @@ func migrateSales(fileName string, xmlContent string) error {
         return err
     }
 
-    sales := xmlquery.Find(doc, "//Dealership/sales/Sale")
-    for _, saleNode := range sales {
+    salesNodes := xmlquery.Find(doc, "//Dealership/sales/Sale")
+    for _, saleNode := range salesNodes {
         carNode := xmlquery.FindOne(saleNode, "./Car")
-        carIDStr := carNode.SelectAttr("id")
-        carID, err := strconv.Atoi(carIDStr)
-        if err != nil {
-            log.Printf("Error converting car ID to integer: %s\n", err)
+        if carNode == nil {
             continue
         }
 
+        color := carNode.SelectAttr("color")
+        year := carNode.SelectAttr("year")
+        modelRef, err := strconv.Atoi(carNode.SelectAttr("model_ref"))
+        if err != nil || color == "" {
+            log.Printf("Invalid car information in XML: %s\n", err)
+            continue
+        }
+
+        modelXPath := fmt.Sprintf("//Brands/Brand/Models/Model[@id='%d']", modelRef)
+		modelNode := xmlquery.FindOne(doc, modelXPath)
+		if modelNode == nil {
+			log.Printf("Model not found for model reference: %d\n", modelRef)
+			continue
+		}
+
+		modelName := modelNode.SelectAttr("name")
+		if modelName == "" {
+			log.Printf("Model name not found for model reference: %d\n", modelRef)
+			continue
+		}
+
+        // Obtém o ID do modelo usando o nome do modelo
+        modelID, err := getModelIDByName(modelName)
+        if err != nil {
+            log.Printf("Error getting model ID by name: %s\n", err)
+            continue
+        }
+        
+        modelIDStr := strconv.Itoa(modelID)
+        // Obtém o ID do carro
+        carID, err := getCarID(color, year, modelIDStr)
+        if err != nil {
+            log.Printf("Error getting car ID: %s\n", err)
+            continue
+        }
+
+        // Continua com a obtenção de IDs de cliente e tipo de cartão de crédito
         customerNode := xmlquery.FindOne(saleNode, "./Customer")
         firstName := customerNode.SelectAttr("first_name")
         lastName := customerNode.SelectAttr("last_name")
+        // Adiciona logs para verificar os nomes
+        log.Printf("First Name: %s, Last Name: %s\n", firstName, lastName)
         customerID, err := getCustomerIDByName(firstName, lastName)
         if err != nil {
             log.Printf("Error getting customer ID: %s\n", err)
@@ -757,17 +870,17 @@ func migrateSales(fileName string, xmlContent string) error {
         }
 
         cardNode := xmlquery.FindOne(saleNode, "./CreditCard_Type")
-        cardName := cardNode.SelectAttr("name")
-        cardTypeID, err := getCreditCardTypeIDByName(cardName)
+        cardTypeName := cardNode.SelectAttr("name")
+        cardTypeID, err := getCreditCardTypeIDByName(cardTypeName)
         if err != nil {
             log.Printf("Error getting card type ID: %s\n", err)
             continue
         }
 
         salePayload := map[string]int{
-            "car_id": carID,
-            "customer_id": customerID,
-            "credit_card_type_id": cardTypeID,
+            "car_id":               carID,
+            "customer_id":          customerID,
+            "credit_card_type_id":  cardTypeID,
         }
 
         jsonData, err := json.Marshal(salePayload)
@@ -789,13 +902,12 @@ func migrateSales(fileName string, xmlContent string) error {
 
         if resp.StatusCode() != 201 {
             log.Printf("Failed to create sale. Status: %d, Body: %s\n", resp.StatusCode(), resp.Body())
-            continue
-        }
+		continue
+			}
 
-        log.Printf("Sale created successfully: %s\n", resp.Body())
-    }
-
-    return nil
+			log.Printf("Sale created successfully: %s\n", resp.Body())
+		}
+	return nil
 }
 
 // função principal
@@ -866,6 +978,11 @@ func processMessage(body []byte) {
 	}
 
 	time.Sleep(1 * time.Millisecond)
+
+	if err := loadAllModels(); err != nil {
+        log.Printf("Erro ao carregar modelos: %s\n", err)
+        return
+    }
 
 	err = migrateSales(msg.FileName, xmlContent)
 	if err != nil {

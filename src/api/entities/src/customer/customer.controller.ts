@@ -33,7 +33,7 @@ export class CustomerController {
         firstName,
         lastName,
       );
-      return { customerID };
+      return customerID;
     } catch (error) {
       return { error: error.message };
     }

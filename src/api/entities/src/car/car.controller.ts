@@ -6,6 +6,7 @@ import {
   Body,
   Put,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { CarService } from './car.service';
 
@@ -21,6 +22,15 @@ export class CarController {
   @Get(':id')
   async findOne(@Param('id') id: string) {
     return this.carService.findOne(id);
+  }
+
+  @Get('find-by-details/:color/:year/:model_id')
+  async findCarIdByDetails(
+    @Param('color') color: string,
+    @Param('year') year: string,
+    @Param('model_id') modelId: string,
+  ) {
+    return this.carService.findCarIdByDetails(color, year, modelId);
   }
 
   @Post('create')

@@ -14,8 +14,12 @@ export class CarService {
   }
 
   async findOne(id: string): Promise<any> {
+    const numericId = parseInt(id, 10);
+    if (isNaN(numericId)) {
+      throw new Error('ID inválido fornecido');
+    }
     return this.prisma.car.findUnique({
-      where: { id: parseInt(id, 10) },
+      where: { id: numericId },
     });
   }
 
@@ -27,6 +31,28 @@ export class CarService {
     return this.prisma.car.create({
       data,
     });
+  }
+
+  async findCarIdByDetails(
+    color: string,
+    year: string,
+    modelId: string,
+  ): Promise<number | null> {
+    try {
+      const car = await this.prisma.car.findFirst({
+        where: {
+          color: color,
+          year: parseInt(year),
+          model_id: parseInt(modelId),
+        },
+        select: { id: true },
+      });
+
+      return car?.id || null;
+    } catch (error) {
+      console.error(`Error in findCarIdByDetails: ${error.message}`);
+      throw error;
+    }
   }
 
   async update(
