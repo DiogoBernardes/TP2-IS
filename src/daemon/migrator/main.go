@@ -842,7 +842,6 @@ func migrateSales(fileName string, xmlContent string) error {
 			continue
 		}
 
-        // Obtém o ID do modelo usando o nome do modelo
         modelID, err := getModelIDByName(modelName)
         if err != nil {
             log.Printf("Error getting model ID by name: %s\n", err)
@@ -850,19 +849,15 @@ func migrateSales(fileName string, xmlContent string) error {
         }
         
         modelIDStr := strconv.Itoa(modelID)
-        // Obtém o ID do carro
         carID, err := getCarID(color, year, modelIDStr)
         if err != nil {
             log.Printf("Error getting car ID: %s\n", err)
             continue
         }
 
-        // Continua com a obtenção de IDs de cliente e tipo de cartão de crédito
         customerNode := xmlquery.FindOne(saleNode, "./Customer")
         firstName := customerNode.SelectAttr("first_name")
         lastName := customerNode.SelectAttr("last_name")
-        // Adiciona logs para verificar os nomes
-        log.Printf("First Name: %s, Last Name: %s\n", firstName, lastName)
         customerID, err := getCustomerIDByName(firstName, lastName)
         if err != nil {
             log.Printf("Error getting customer ID: %s\n", err)
@@ -902,11 +897,11 @@ func migrateSales(fileName string, xmlContent string) error {
 
         if resp.StatusCode() != 201 {
             log.Printf("Failed to create sale. Status: %d, Body: %s\n", resp.StatusCode(), resp.Body())
-		continue
-			}
-
-			log.Printf("Sale created successfully: %s\n", resp.Body())
+		    continue
 		}
+
+		log.Printf("Sale created successfully: %s\n", resp.Body())
+	}
 	return nil
 }
 
