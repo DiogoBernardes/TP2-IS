@@ -185,6 +185,8 @@ services:
       - "${EXT_PORT_API_GIS}:${API_PORT}"
     environment:
       API_PORT: ${API_PORT}
+    depends_on:
+      - db-rel
 
   # Container that runs the API for procedures
   api-proc:
