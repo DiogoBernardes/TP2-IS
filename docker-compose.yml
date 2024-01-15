@@ -120,6 +120,7 @@ services:
       API_ENTITIES_URL: "localhost:${EXT_PORT_API_ENTITIES}"
     depends_on:
       - api-entities
+      - migrator
 
   # Container that runs the web interface for displaying the map
   frontend-gis:
