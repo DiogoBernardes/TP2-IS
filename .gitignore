@@ -56,3 +56,4 @@ Thumbs.db
 *.xml
 *.sh
 *.csv
+.vscode/settings.json

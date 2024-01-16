@@ -20,14 +20,15 @@ import (
 
 const (
 
-	rabbitMQURL = "amqp://is:is@rabbitmq:5672/is"
-	queueName   = "tasks"
+    rabbitMQURL         = "amqp://is:is@rabbitmq:5672/is"
+    queueName           = "tasks"
+    queueNameGis        = "geom"
 
-	dbUser      = "is"
-	dbPassword  = "is"
-	dbName      = "is"
-	dbHost		= "db-xml"
-	port		= "5432"
+    dbUser              = "is"
+    dbPassword          = "is"
+    dbName              = "is"
+    dbHost		        = "db-xml"
+	port		        = "5432"
 
 	//API's
 	apiUrl 				=	"http://api-entities:8080"
@@ -67,7 +68,6 @@ const (
 	apiSalesDel			=	"http://api-entities:8080/sales/delete-all"
 
 )
-
 
 // STRUCTS
 type Message struct {
@@ -553,9 +553,6 @@ func migrateBrands(fileName string, xmlContent string) error {
             return fmt.Errorf("Failed to call API Brands. Status: %d", respBrand.StatusCode())
         }
 
-        log.Printf("API Brands Response: Status %d\n", respBrand.StatusCode())
-        log.Printf("Response Body: %s\n", respBrand.Body())
-
 		respBrandID, err := resty.New().
 			R().
 			Get(fmt.Sprintf("%s/%s", apiBrandsByName, brandName))
@@ -625,9 +622,6 @@ func migrateModels(brand *xmlquery.Node, brandID int) error {
             log.Printf("Response Body: %s\n", respModel.Body())
             return fmt.Errorf("Failed to call API Models. Status: %d", respModel.StatusCode())
         }
-
-        log.Printf("API Models Response: Status %d\n", respModel.StatusCode())
-        log.Printf("Response Body: %s\n", respModel.Body())
 
         time.Sleep(1 * time.Millisecond)
     }
@@ -905,6 +899,55 @@ func migrateSales(fileName string, xmlContent string) error {
 	return nil
 }
 
+//MENSAGEM PARA GIS
+func publishToQueue() error {
+    messageBody := "Podes mexer na tabela Country da db-rel"
+    conn, err := amqp.Dial(rabbitMQURL)
+    if err != nil {
+        log.Println("Erro ao conectar ao RabbitMQ:", err)
+        return err
+    }
+    defer conn.Close()
+
+    ch, err := conn.Channel()
+    if err != nil {
+        log.Println("Erro ao abrir o canal do RabbitMQ:", err)
+        return err
+    }
+    defer ch.Close()
+
+    q, err := ch.QueueDeclare(
+        queueNameGis,
+        true,
+        false,
+        false,
+        false,
+        nil,
+    )
+    if err != nil {
+        log.Println("Erro ao declarar a fila RabbitMQ:", err)
+        return err
+    }
+
+    err = ch.Publish(
+        "",
+        q.Name,
+        false,
+        false,
+        amqp.Publishing{
+            ContentType: "text/plain",
+            Body:        []byte(messageBody),
+        },
+    )
+    if err != nil {
+        log.Println("Erro ao publicar a mensagem no RabbitMQ:", err)
+        return err
+    }
+
+    log.Println("Mensagem publicada com sucesso no RabbitMQ")
+    return nil
+}
+
 // função principal
 func processMessage(body []byte) {
 	var msg Message
@@ -917,7 +960,6 @@ func processMessage(body []byte) {
 	fmt.Printf("Mensagem Recebida: %+v\n", msg)
 	log.Printf("Processando mensagem: %+v", msg)
 
-	// Conectar à db-xml
 	db := connectDB()
 	defer db.Close()
 
@@ -940,52 +982,56 @@ func processMessage(body []byte) {
 		return
 	}
 
-	time.Sleep(1 * time.Millisecond)
-
-	err = migrateCustomers(msg.FileName, xmlContent)
-	if err != nil {
-		log.Printf("Erro ao migrar marcas e países: %s", err)
-		return
-	}
-
-	time.Sleep(1 * time.Millisecond)
-
-	err = migrateCreditCard(msg.FileName, xmlContent)
-	if err != nil {
-		log.Printf("Erro ao migrar cards: %s", err)
-		return
-	}
-
-	time.Sleep(1 * time.Millisecond)
-
-	err = migrateBrands(msg.FileName, xmlContent)
-	if err != nil {
-		log.Printf("Erro ao migrar marcas e modelos: %s", err)
-		return
-	}
-
-	time.Sleep(1 * time.Millisecond)
-
-	err = migrateCars(msg.FileName, xmlContent)
-	if err != nil {
-		log.Printf("Erro ao migrar os carros: %s", err)
-		return
-	}
-
-	time.Sleep(1 * time.Millisecond)
-
-	if err := loadAllModels(); err != nil {
-        log.Printf("Erro ao carregar modelos: %s\n", err)
-        return
+    if err := publishToQueue(); err != nil {
+        log.Println("Erro ao enviar mensagem para fila geom:", err)
     }
 
-	err = migrateSales(msg.FileName, xmlContent)
-	if err != nil {
-		log.Printf("Erro ao migrar os carros: %s", err)
-		return
-	}
-
 	time.Sleep(1 * time.Millisecond)
+
+	// err = migrateCustomers(msg.FileName, xmlContent)
+	// if err != nil {
+	// 	log.Printf("Erro ao migrar marcas e países: %s", err)
+	// 	return
+	// }
+
+	// time.Sleep(1 * time.Millisecond)
+
+	// err = migrateCreditCard(msg.FileName, xmlContent)
+	// if err != nil {
+	// 	log.Printf("Erro ao migrar cards: %s", err)
+	// 	return
+	// }
+
+	// time.Sleep(1 * time.Millisecond)
+
+	// err = migrateBrands(msg.FileName, xmlContent)
+	// if err != nil {
+	// 	log.Printf("Erro ao migrar marcas e modelos: %s", err)
+	// 	return
+	// }
+
+	// time.Sleep(1 * time.Millisecond)
+
+	// err = migrateCars(msg.FileName, xmlContent)
+	// if err != nil {
+	// 	log.Printf("Erro ao migrar os carros: %s", err)
+	// 	return
+	// }
+
+	// time.Sleep(1 * time.Millisecond)
+
+	// if err := loadAllModels(); err != nil {
+    //     log.Printf("Erro ao carregar modelos: %s\n", err)
+    //     return
+    // }
+
+	// err = migrateSales(msg.FileName, xmlContent)
+	// if err != nil {
+	// 	log.Printf("Erro ao migrar os carros: %s", err)
+	// 	return
+	// }
+
+	// time.Sleep(1 * time.Millisecond)
 
 	log.Println("Migração concluída com sucesso")
 	
