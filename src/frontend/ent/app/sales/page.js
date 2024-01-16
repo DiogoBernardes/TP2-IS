@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import {
   CircularProgress,
   Pagination,
@@ -10,34 +10,18 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  TextField,
 } from "@mui/material";
-import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import useApi from "../Hooks/useAPI";
 
 export default function SalesPage() {
   const api = useApi();
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
-  const router = useRouter();
-
-  const createQueryString = useCallback(
-    (name, value) => {
-      const params = new URLSearchParams(searchParams);
-      params.set(name, value);
-      return params.toString();
-    },
-    [searchParams]
-  );
-
   const [sales, setSales] = useState([]);
-  const [maxDataSize, setMaxDataSize] = useState(0);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const [customerNames, setCustomerNames] = useState([]);
   const [creditCardNames, setCreditCardNames] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
-
-  const page = parseInt(searchParams.get("page")) || 1;
-  const PAGE_SIZE = 10;
+  const [dataReady, setDataReady] = useState(false);
+  const itemsPerPage = 20;
 
   const fetchCustomerNames = async (customerIds) => {
     try {
@@ -88,12 +72,35 @@ export default function SalesPage() {
     }
   };
 
-  const fetchSalesData = async () => {
+  const updateCustomerNames = async () => {
     try {
-      const response = await api.GET("/sales");
-      const salesData = response.data;
-      setSales(salesData);
-      setMaxDataSize(salesData.length);
+      if (sales.length > 0) {
+        const customerIds = sales.map((row) => row.customer_id);
+        const customerNamesPromises = customerIds.map((customerId) =>
+          api.GET(`/customers/${customerId}`)
+        );
+
+        const customerResponses = await Promise.all(customerNamesPromises);
+
+        const customerNames = customerResponses.map((response) => {
+          const customerData = response.data;
+          return `${customerData.first_name} ${customerData.last_name}`;
+        });
+
+        setCustomerNames(customerNames);
+        setDataReady(true);
+      }
+    } catch (error) {
+      console.error("Error updating customer names:", error);
+    }
+  };
+
+  const fetchSales = async (pageNumber) => {
+    try {
+      const response = await api.GET(
+        `/sales?page=${pageNumber}&pageSize=${itemsPerPage}`
+      );
+      const salesData = response.data.data;
 
       const customerIds = salesData.map((row) => row.customer_id);
       const creditCardIds = salesData.map((row) => row.credit_card_type_id);
@@ -114,72 +121,51 @@ export default function SalesPage() {
         })
       );
 
-      setCustomerNames(customerNames);
       setCreditCardNames(creditCardNames);
       setSales(salesWithAdditionalInfo);
+      setTotalPages(Math.ceil(response.data.totalCount / itemsPerPage));
+
+      updateCustomerNames();
     } catch (error) {
       console.error("Error fetching sales:", error);
     }
   };
 
   useEffect(() => {
-    fetchSalesData();
-  }, [page, searchTerm]);
+    fetchSales(page);
+  }, [page]);
+
+  useEffect(() => {
+    updateCustomerNames();
+  }, [sales]);
 
   const handlePageChange = (event, value) => {
-    router.push(pathname + "?" + createQueryString("page", value));
-  };
-
-  const handleSearchChange = (event) => {
-    setSearchTerm(event.target.value);
+    setPage(value);
   };
 
   const renderSalesRows = () => {
-    const filteredSales = sales.filter((row) => {
-      const carId = row.car_id ? row.car_id.toString() : "";
-      const modelName = row.modelName ? row.modelName.toLowerCase() : "";
-      const brandName = row.brandName ? row.brandName.toLowerCase() : "";
-      const customerName =
-        customerNames.length > 0 ? customerNames[0].toLowerCase() : "";
-      const creditCardName =
-        creditCardNames.length > 0 ? creditCardNames[0].toLowerCase() : "";
-
-      return (
-        carId.includes(searchTerm) ||
-        modelName.includes(searchTerm) ||
-        brandName.includes(searchTerm) ||
-        customerName.includes(searchTerm) ||
-        creditCardName.includes(searchTerm) ||
-        row.id.toString().includes(searchTerm) ||
-        row.customer_id.toString().includes(searchTerm) ||
-        row.credit_card_type_id.toString().includes(searchTerm)
-      );
-    });
-
-    const slicedSales = filteredSales.slice(
-      (page - 1) * PAGE_SIZE,
-      page * PAGE_SIZE
-    );
-
-    return slicedSales.map((row, index) => (
-      <TableRow key={row.id}>
+    return sales.map((sale) => (
+      <TableRow key={sale.id}>
         <TableCell component="td" align="center">
-          {row.id}
+          {sale.id}
         </TableCell>
         <TableCell component="td" scope="row">
-          {row.car_id}
+          {sale.car_id}
         </TableCell>
         <TableCell component="td" scope="row">
-          {row.modelName || "N/A"}
+          {sale.modelName || "N/A"}
         </TableCell>
         <TableCell component="td" scope="row">
-          {row.brandName || "N/A"}
+          {sale.brandName || "N/A"}
         </TableCell>
         <TableCell component="td" scope="row">
-          {customerNames[index] || "N/A"}
+          {sale.customer_id}
         </TableCell>
         <TableCell component="td" scope="row">
-          {creditCardNames[index] || "N/A"}
+          {customerNames[sale.customer_id] || "N/A"}
+        </TableCell>
+        <TableCell component="td" scope="row">
+          {creditCardNames[sale.credit_card_type_id] || "N/A"}
         </TableCell>
       </TableRow>
     ));
@@ -187,52 +173,54 @@ export default function SalesPage() {
 
   return (
     <>
-      <h1 sx={{ fontSize: "100px" }}>Sales</h1>
-      <TextField
-        label="Search"
-        variant="outlined"
-        margin="normal"
-        onChange={handleSearchChange}
-      />
-
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
-          <TableHead>
-            <TableRow sx={{ backgroundColor: "lightgray" }}>
-              <TableCell component="th" width={"1px"} align="center">
-                ID
-              </TableCell>
-              <TableCell>Car ID</TableCell>
-              <TableCell>Model</TableCell>
-              <TableCell>Brand</TableCell>
-              <TableCell>Customer</TableCell>
-              <TableCell>Credit Card</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {sales.length > 0 ? (
-              renderSalesRows()
-            ) : (
-              <TableRow>
-                <TableCell colSpan={6}>
-                  <CircularProgress />
+      <h1>
+        <b>Sales Page</b>
+      </h1>
+      {dataReady ? (
+        <TableContainer component={Paper}>
+          <Table sx={{ minWidth: 650 }} aria-label="simple table">
+            <TableHead>
+              <TableRow sx={{ backgroundColor: "lightgray" }}>
+                <TableCell component="th" width={"1px"} align="center">
+                  ID
                 </TableCell>
+                <TableCell>Car ID</TableCell>
+                <TableCell>Model</TableCell>
+                <TableCell>Brand</TableCell>
+                <TableCell>Customer</TableCell>
+                <TableCell>Customer</TableCell>
+                <TableCell>Credit Card</TableCell>
               </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      {maxDataSize && (
+            </TableHead>
+            <TableBody>
+              {sales.length > 0 ? (
+                renderSalesRows()
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={8} align="center">
+                    {sales.length === 0 ? (
+                      <CircularProgress />
+                    ) : (
+                      "No data available"
+                    )}
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      ) : (
+        <CircularProgress />
+      )}
+      {totalPages > 0 && (
         <Pagination
           style={{ color: "black", marginTop: 8 }}
           variant="outlined"
           shape="rounded"
           color={"primary"}
-          onChange={(e, v) => {
-            router.push(pathname + "?" + createQueryString("page", v));
-          }}
+          onChange={handlePageChange}
           page={page}
-          count={Math.ceil(maxDataSize / PAGE_SIZE)}
+          count={totalPages}
         />
       )}
     </>

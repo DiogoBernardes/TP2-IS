@@ -9,14 +9,22 @@ export class SaleService {
     this.prisma = new PrismaClient();
   }
 
-  async findAll(): Promise<any[]> {
-    return this.prisma.sale.findMany();
+  async findAll(page: number = 1, pageSize: number = 20): Promise<any[]> {
+    const skip = (page - 1) * pageSize;
+    return this.prisma.sale.findMany({
+      skip: skip,
+      take: 20,
+    });
   }
 
   async findOne(id: string): Promise<any> {
     return this.prisma.sale.findUnique({
       where: { id: parseInt(id, 10) },
     });
+  }
+
+  async getTotalCount(): Promise<number> {
+    return this.prisma.sale.count();
   }
 
   async create(data: {

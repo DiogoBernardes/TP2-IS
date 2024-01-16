@@ -6,6 +6,7 @@ import {
   Body,
   Put,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { SaleService } from './sale.service';
 
@@ -14,8 +15,19 @@ export class SaleController {
   constructor(private readonly saleService: SaleService) {}
 
   @Get()
-  async findAll() {
-    return this.saleService.findAll();
+  async findAll(
+    @Query('page') page: number = 1,
+    @Query('pageSize') pageSize: number = 20,
+  ) {
+    const [data, totalCount] = await Promise.all([
+      this.saleService.findAll(page, pageSize),
+      this.saleService.getTotalCount(),
+    ]);
+
+    return {
+      data,
+      totalCount,
+    };
   }
 
   @Get(':id')
