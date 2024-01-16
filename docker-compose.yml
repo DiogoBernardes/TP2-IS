@@ -31,6 +31,8 @@ services:
     depends_on:
       - db-xml
       - watcher
+      - broker
+      - migrator
 
   # Container that runs the watcher
   watcher:

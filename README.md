@@ -33,26 +33,34 @@ In this second part we've added API's, another language besides Python, Golang, 
 
 ## Running th program
 
-Create Docker Images and Containers - Navigate to the project's root folder (TP2-IS) and execute the following command:
+Create Docker Images and Containers - Navigate to the project's root folder (TP2-IS).
+
+First we need to build the database conteiner's using the following command:
 
 ```
-  docker-compose up --build -d
+  docker-compose up --build db-rel db-xml broker -d
 ```
 
-That command will create and start up the enviroment we will be working in.
-Then we will need to install the project dependencies, this going to two folders, they are: 
-
-- TP2-IS
-
-- TP2-IS\src\api\entities
-
-And run the following command:
-
+Secondly the API conteiner's:
 ```
-    npm install
+  docker-compose up --build api-gis api-proc api-entities api-graphql -d
 ```
 
-If you want to see the results in docker you have the links where you can see every frontend.
+Then we will need to build the rest of the architecture:
+
+```
+  docker-compose up --build migrator watcher gis-updater importer -d
+```
+
+To see the complete data using a modern interface, run:
+
+```
+  docker-compose up --build frontend-proc frontend-gis frontend-ent -d
+```
+
+Those commands will create and start up the enviroment we create, we hope you enjoy! 
+
+The links to acess the frontend's are in each respectivly docker conteiner.
 ## Stacks
 ![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)
 ![Flask](https://img.shields.io/badge/flask-%23000.svg?style=for-the-badge&logo=flask&logoColor=white)
