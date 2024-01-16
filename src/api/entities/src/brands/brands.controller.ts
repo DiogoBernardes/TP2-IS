@@ -1,4 +1,3 @@
-// brands.controller.ts
 import {
   Controller,
   Get,
@@ -7,6 +6,7 @@ import {
   Body,
   Put,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { BrandsService } from './brands.service';
 
@@ -15,8 +15,17 @@ export class BrandsController {
   constructor(private readonly brandsService: BrandsService) {}
 
   @Get()
-  async findAll() {
-    return this.brandsService.findAll();
+  async findAll(
+    @Query('page') page: number = 1,
+    @Query('pageSize') pageSize: number = 20,
+  ) {
+    const brands = await this.brandsService.findAll(page, pageSize);
+    const totalCount = await this.brandsService.getTotalCount();
+
+    return {
+      data: brands,
+      totalCount,
+    };
   }
 
   @Get(':id')

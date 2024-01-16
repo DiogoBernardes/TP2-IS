@@ -9,8 +9,13 @@ export class BrandsService {
     this.prisma = new PrismaClient();
   }
 
-  async findAll(): Promise<any[]> {
-    return this.prisma.brand.findMany();
+  async findAll(page: number = 1, pageSize: number = 20): Promise<any[]> {
+    const skip = (page - 1) * pageSize;
+
+    return this.prisma.brand.findMany({
+      skip: skip,
+      take: 20,
+    });
   }
 
   async findOne(id: string): Promise<any> {
@@ -19,6 +24,10 @@ export class BrandsService {
     });
   }
 
+  async getTotalCount(): Promise<number> {
+    return this.prisma.brand.count();
+  }
+  
   async getBrandIdByName(name: string): Promise<number | null> {
     try {
       const brand = await this.prisma.brand.findFirst({

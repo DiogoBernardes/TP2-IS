@@ -18,32 +18,17 @@ export default function BrandsPage() {
   const [brands, setBrands] = useState([]);
   const [maxDataSize, setMaxDataSize] = useState(0);
   const [page, setPage] = useState(1);
-
-  const fetchModelsForBrand = async (brandId) => {
-    try {
-      const response = await api.GET(`/brands/${brandId}/models`);
-      return response.data;
-    } catch (error) {
-      console.error("Error fetching models for brand:", error);
-      throw error;
-    }
-  };
+  const itemsPerPage = 20;
 
   const fetchBrands = async (pageNumber) => {
     try {
-      const response = await api.GET(`/brands?page=${pageNumber}`);
-      setBrands(response.data);
-      setMaxDataSize(response.headers["x-total-count"]);
-      const brandsWithModels = await Promise.all(
-        response.data.map(async (brand) => {
-          const models = await fetchModelsForBrand(brand.id);
-          return {
-            ...brand,
-            models,
-          };
-        })
+      const response = await api.GET(
+        `/brands?page=${pageNumber}&pageSize=${itemsPerPage}`
       );
-      setBrands(brandsWithModels);
+      const totalItems = response.data.totalCount;
+      setMaxDataSize(totalItems);
+      const brandsList = response.data.data;
+      setBrands(brandsList);
     } catch (error) {
       console.error("Error fetching brands:", error);
     }
@@ -71,7 +56,7 @@ export default function BrandsPage() {
   };
 
   return (
-    <main>
+    <>
       <h1>
         <b>Brands Page</b>
       </h1>
@@ -91,14 +76,18 @@ export default function BrandsPage() {
             ) : (
               <TableRow>
                 <TableCell colSpan={2} align="center">
-                  <CircularProgress />
+                  {brands.length === 0 && maxDataSize > 0 ? (
+                    <CircularProgress />
+                  ) : (
+                    "No data available"
+                  )}
                 </TableCell>
               </TableRow>
             )}
           </TableBody>
         </Table>
       </TableContainer>
-      {maxDataSize && (
+      {maxDataSize > 0 && (
         <Pagination
           style={{ color: "black", marginTop: 8 }}
           variant="outlined"
@@ -106,9 +95,9 @@ export default function BrandsPage() {
           color={"primary"}
           onChange={handlePageChange}
           page={page}
-          count={Math.ceil(maxDataSize / 10)}
+          count={Math.ceil(maxDataSize / itemsPerPage)}
         />
       )}
-    </main>
+    </>
   );
 }
