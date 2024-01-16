@@ -1,3 +1,4 @@
+// customers.page.js
 "use client";
 import React, { useState, useEffect } from "react";
 import {
@@ -19,17 +20,8 @@ export default function CustomersPage() {
   const [customers, setCustomers] = useState([]);
   const [maxDataSize, setMaxDataSize] = useState(0);
   const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(20);
   const [searchTerm, setSearchTerm] = useState("");
-
-  const fetchCustomers = async (pageNumber) => {
-    try {
-      const response = await api.GET(`/customers?page=${pageNumber}`);
-      setCustomers(response.data);
-      setMaxDataSize(response.headers["x-total-count"]);
-    } catch (error) {
-      console.error("Error fetching customers:", error);
-    }
-  };
 
   const fetchCountryDetails = async (countryId) => {
     try {
@@ -41,26 +33,34 @@ export default function CustomersPage() {
     }
   };
 
-  const fetchCountryForCustomers = async () => {
-    const customersWithCountryDetails = await Promise.all(
-      customers.map(async (customer) => {
-        const countryName = await fetchCountryDetails(customer.country_id);
-        return {
-          ...customer,
-          countryName,
-        };
-      })
-    );
-    setCustomers(customersWithCountryDetails);
+  const fetchCustomers = async (pageNumber) => {
+    try {
+      const response = await api.GET(
+        `/customers?page=${pageNumber}&pageSize=${pageSize}`
+      );
+
+      const customersWithCountryDetails = await Promise.all(
+        response.data.data.map(async (customer) => {
+          const countryName = await fetchCountryDetails(customer.country_id);
+          return {
+            ...customer,
+            countryName,
+          };
+        })
+      );
+
+      setCustomers(customersWithCountryDetails);
+      setMaxDataSize(response.data.totalCount);
+    } catch (error) {
+      console.error("Error fetching customers:", error);
+      setCustomers([]);
+      setMaxDataSize(0);
+    }
   };
 
   useEffect(() => {
     fetchCustomers(page);
-  }, [page]);
-
-  useEffect(() => {
-    fetchCountryForCustomers();
-  }, [customers]);
+  }, [page, pageSize]);
 
   const handlePageChange = (event, value) => {
     setPage(value);
@@ -74,8 +74,7 @@ export default function CustomersPage() {
     const filteredCustomers = customers.filter(
       (customer) =>
         customer.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        customer.last_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        customer.countryName.toLowerCase().includes(searchTerm.toLowerCase())
+        customer.last_name.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     return filteredCustomers.map((customer) => (
@@ -84,7 +83,7 @@ export default function CustomersPage() {
           {customer.id}
         </TableCell>
         <TableCell component="td" scope="row">
-          {customer.first_name} {customer.last_name}
+          {`${customer.first_name} ${customer.last_name}`}
         </TableCell>
         <TableCell component="td" align="center">
           {customer.first_name}
@@ -136,7 +135,7 @@ export default function CustomersPage() {
           </TableBody>
         </Table>
       </TableContainer>
-      {maxDataSize && (
+      {maxDataSize > 0 && (
         <Pagination
           style={{ color: "black", marginTop: 8 }}
           variant="outlined"
@@ -144,7 +143,7 @@ export default function CustomersPage() {
           color={"primary"}
           onChange={handlePageChange}
           page={page}
-          count={Math.ceil(maxDataSize / 10)}
+          count={Math.ceil(maxDataSize / pageSize)}
         />
       )}
     </main>

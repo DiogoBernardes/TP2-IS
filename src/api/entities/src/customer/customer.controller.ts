@@ -6,6 +6,7 @@ import {
   Body,
   Put,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { CustomerService } from './customer.service';
 
@@ -14,8 +15,18 @@ export class CustomerController {
   constructor(private readonly customerService: CustomerService) {}
 
   @Get()
-  async findAll() {
-    return this.customerService.findAll();
+  @Get()
+  async findAll(
+    @Query('page') page: number = 1,
+    @Query('pageSize') pageSize: number = 20,
+  ) {
+    const customer = await this.customerService.findAll(page, pageSize);
+    const totalCount = await this.customerService.getTotalCount();
+
+    return {
+      data: customer,
+      totalCount,
+    };
   }
 
   @Get(':id')

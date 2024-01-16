@@ -988,50 +988,50 @@ func processMessage(body []byte) {
 
 	time.Sleep(1 * time.Millisecond)
 
-	// err = migrateCustomers(msg.FileName, xmlContent)
-	// if err != nil {
-	// 	log.Printf("Erro ao migrar marcas e países: %s", err)
-	// 	return
-	// }
+	err = migrateCustomers(msg.FileName, xmlContent)
+	if err != nil {
+	    log.Printf("Erro ao migrar marcas e países: %s", err)
+	 	return
+	}
 
-	// time.Sleep(1 * time.Millisecond)
+	time.Sleep(1 * time.Millisecond)
 
-	// err = migrateCreditCard(msg.FileName, xmlContent)
-	// if err != nil {
-	// 	log.Printf("Erro ao migrar cards: %s", err)
-	// 	return
-	// }
+	err = migrateCreditCard(msg.FileName, xmlContent)
+	if err != nil {
+    	log.Printf("Erro ao migrar cards: %s", err)
+ 	    return
+	}
 
-	// time.Sleep(1 * time.Millisecond)
+	time.Sleep(1 * time.Millisecond)
 
-	// err = migrateBrands(msg.FileName, xmlContent)
-	// if err != nil {
-	// 	log.Printf("Erro ao migrar marcas e modelos: %s", err)
-	// 	return
-	// }
+	err = migrateBrands(msg.FileName, xmlContent)
+	if err != nil {
+	    log.Printf("Erro ao migrar marcas e modelos: %s", err)
+	 	return
+	}
 
-	// time.Sleep(1 * time.Millisecond)
+	time.Sleep(1 * time.Millisecond)
 
-	// err = migrateCars(msg.FileName, xmlContent)
-	// if err != nil {
-	// 	log.Printf("Erro ao migrar os carros: %s", err)
-	// 	return
-	// }
+	err = migrateCars(msg.FileName, xmlContent)
+	if err != nil {
+	 	log.Printf("Erro ao migrar os carros: %s", err)
+	 	return
+	}
 
-	// time.Sleep(1 * time.Millisecond)
+	time.Sleep(1 * time.Millisecond)
 
-	// if err := loadAllModels(); err != nil {
-    //     log.Printf("Erro ao carregar modelos: %s\n", err)
-    //     return
-    // }
+	if err := loadAllModels(); err != nil {
+         log.Printf("Erro ao carregar modelos: %s\n", err)
+         return
+    }
 
-	// err = migrateSales(msg.FileName, xmlContent)
-	// if err != nil {
-	// 	log.Printf("Erro ao migrar os carros: %s", err)
-	// 	return
-	// }
+	err = migrateSales(msg.FileName, xmlContent)
+	if err != nil {
+	 	log.Printf("Erro ao migrar os carros: %s", err)
+	 	return
+	}
 
-	// time.Sleep(1 * time.Millisecond)
+	time.Sleep(1 * time.Millisecond)
 
 	log.Println("Migração concluída com sucesso")
 	
