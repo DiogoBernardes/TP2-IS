@@ -15,8 +15,19 @@ export class CarController {
   constructor(private readonly carService: CarService) {}
 
   @Get()
-  async findAll() {
-    return this.carService.findAll();
+  async findAll(
+    @Query('page') page: number = 1,
+    @Query('pageSize') pageSize: number = 20,
+  ) {
+    const [data, totalCount] = await Promise.all([
+      this.carService.findAll(page, pageSize),
+      this.carService.getTotalCount(),
+    ]);
+
+    return {
+      data,
+      totalCount,
+    };
   }
 
   @Get(':id')

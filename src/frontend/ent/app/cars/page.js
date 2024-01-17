@@ -10,7 +10,6 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  TextField,
 } from "@mui/material";
 import useApi from "../Hooks/useAPI";
 
@@ -19,86 +18,59 @@ export default function CarsPage() {
   const [cars, setCars] = useState([]);
   const [maxDataSize, setMaxDataSize] = useState(0);
   const [page, setPage] = useState(1);
-  const [searchTerm, setSearchTerm] = useState("");
+  const itemsPerPage = 20;
 
-  const fetchCars = async (pageNumber) => {
+  const fetchCarsWithDetails = async (pageNumber) => {
     try {
-      const response = await api.GET(`/cars?page=${pageNumber}`);
-      setCars(response.data);
-      setMaxDataSize(response.headers["x-total-count"]);
-    } catch (error) {
-      console.error("Error fetching brand cars:", error);
-    }
-  };
+      const response = await api.GET(
+        `/cars?page=${pageNumber}&pageSize=${itemsPerPage}`
+      );
+      const totalItems = response.data.totalCount;
+      setMaxDataSize(totalItems);
+      const carsList = response.data.data;
 
-  const fetchModelDetails = async (modelId) => {
-    try {
-      const modelDetails = await api.GET(`/models/${modelId}`);
-      const brandId = modelDetails.data.brand_id;
-      const brandName = await fetchBrandName(brandId);
-      return {
-        modelName: modelDetails.data.name,
-        brandName,
-      };
-    } catch (error) {
-      console.error("Error fetching model details:", error);
-      return {
-        modelName: "N/A",
-        brandName: "N/A",
-      };
-    }
-  };
+      const carsWithDetails = await Promise.all(
+        carsList.map(async (car) => {
+          try {
+            const modelDetails = await api.GET(`/models/${car.model_id}`);
+            const brandId = modelDetails.data.brand_id;
+            const brandDetails = brandId
+              ? await api.GET(`/brands/${brandId}`)
+              : { data: { name: "N/A" } };
 
-  const fetchBrandName = async (brandId) => {
-    try {
-      const brandDetails = await api.GET(`/brands/${brandId}`);
-      return brandDetails.data.name;
-    } catch (error) {
-      console.error("Error fetching brand name:", error);
-      return "N/A";
-    }
-  };
+            return {
+              ...car,
+              modelName: modelDetails.data.name,
+              brandName: brandDetails.data.name,
+            };
+          } catch (error) {
+            console.error("Error fetching model and brand details:", error);
+            return {
+              ...car,
+              modelName: "N/A",
+              brandName: "N/A",
+            };
+          }
+        })
+      );
 
-  const fetchModelsForCars = async () => {
-    const carsWithModelDetails = await Promise.all(
-      cars.map(async (car) => {
-        const modelDetails = await fetchModelDetails(car.model_id);
-        return {
-          ...car,
-          ...modelDetails,
-        };
-      })
-    );
-    setCars(carsWithModelDetails);
+      setCars(carsWithDetails);
+    } catch (error) {
+      console.error("Error fetching cars:", error);
+    }
   };
 
   useEffect(() => {
-    fetchCars(page);
+    console.log("Fetching cars...");
+    fetchCarsWithDetails(page);
   }, [page]);
-
-  useEffect(() => {
-    fetchModelsForCars();
-  }, [cars]);
 
   const handlePageChange = (event, value) => {
     setPage(value);
   };
 
-  const handleSearchChange = (event) => {
-    setSearchTerm(event.target.value);
-  };
-
-  const renderBrandCarRows = () => {
-    const filteredCars = cars.filter(
-      (car) =>
-        car.color.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        car.year.toString().includes(searchTerm) ||
-        car.model_id.toString().includes(searchTerm) ||
-        car.modelName.toLowerCase().includes(searchTerm) ||
-        car.brandName.toLowerCase().includes(searchTerm)
-    );
-
-    return filteredCars.map((car) => (
+  const renderBrandRows = () => {
+    return cars.map((car) => (
       <TableRow key={car.id}>
         <TableCell component="td" align="center">
           {car.id}
@@ -106,33 +78,27 @@ export default function CarsPage() {
         <TableCell component="td" scope="row">
           {car.color}
         </TableCell>
-        <TableCell component="td" align="center">
+        <TableCell component="td" scope="row">
           {car.year}
         </TableCell>
-        <TableCell component="td" align="center">
+        <TableCell component="td" scope="row">
           {car.model_id}
         </TableCell>
-        <TableCell component="td" align="center">
-          {car.modelName}
+        <TableCell component="td" scope="row">
+          {car.modelName || "N/A"}
         </TableCell>
-        <TableCell component="td" align="center">
-          {car.brandName}
+        <TableCell component="td" scope="row">
+          {car.brandName || "N/A"}
         </TableCell>
       </TableRow>
     ));
   };
 
   return (
-    <main>
+    <>
       <h1>
         <b>Cars Page</b>
       </h1>
-      <TextField
-        label="Search"
-        variant="outlined"
-        margin="normal"
-        onChange={handleSearchChange}
-      />
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
@@ -141,26 +107,30 @@ export default function CarsPage() {
                 ID
               </TableCell>
               <TableCell>Color</TableCell>
-              <TableCell align="center">Year</TableCell>
-              <TableCell align="center">Model ID</TableCell>
-              <TableCell align="center">Model Name</TableCell>
-              <TableCell align="center">Brand Name</TableCell>
+              <TableCell>Year</TableCell>
+              <TableCell>Model ID</TableCell>
+              <TableCell>Model Name</TableCell>
+              <TableCell>Brand Name</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {cars.length > 0 ? (
-              renderBrandCarRows()
+              renderBrandRows()
             ) : (
               <TableRow>
                 <TableCell colSpan={6} align="center">
-                  <CircularProgress />
+                  {cars.length === 0 && maxDataSize > 0 ? (
+                    <CircularProgress />
+                  ) : (
+                    "No data available"
+                  )}
                 </TableCell>
               </TableRow>
             )}
           </TableBody>
         </Table>
       </TableContainer>
-      {maxDataSize && (
+      {maxDataSize > 0 && (
         <Pagination
           style={{ color: "black", marginTop: 8 }}
           variant="outlined"
@@ -168,9 +138,9 @@ export default function CarsPage() {
           color={"primary"}
           onChange={handlePageChange}
           page={page}
-          count={Math.ceil(maxDataSize / 10)}
+          count={Math.ceil(maxDataSize / itemsPerPage)}
         />
       )}
-    </main>
+    </>
   );
 }
