@@ -14,8 +14,8 @@ import { ModelService } from './models.service';
 export class ModelsController {
   constructor(private readonly modelService: ModelService) {}
 
-  @Get()
-  async findAll(
+  @Get('findModels/')
+  async findAllModels(
     @Query('page') page: number = 1,
     @Query('pageSize') pageSize: number = 20,
   ) {
@@ -26,6 +26,11 @@ export class ModelsController {
       data: models,
       totalCount,
     };
+  }
+
+  @Get()
+  async findAll() {
+    return this.modelService.findAll();
   }
 
   @Get(':id')

@@ -43,7 +43,7 @@ export default function ModelsPage() {
   const fetchModels = async (pageNumber) => {
     try {
       const response = await api.GET(
-        `/models?page=${pageNumber}&pageSize=${itemsPerPage}`
+        `/models/findModels?page=${pageNumber}&pageSize=${itemsPerPage}`
       );
 
       console.log("Models Response:", response.data);

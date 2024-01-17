@@ -18,6 +18,10 @@ export class ModelService {
     });
   }
 
+  async findAll(): Promise<any[]> {
+    return this.prisma.model.findMany();
+  }
+
   async findOneModel(id: string): Promise<any> {
     return this.prisma.model.findUnique({
       where: { id: parseInt(id, 10) },
