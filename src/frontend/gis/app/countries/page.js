@@ -9,10 +9,11 @@ import {
   TableRow,
 } from "@mui/material";
 import Paper from "@mui/material/Paper";
+
 export default function CountriesPage() {
   const [countries, setCountries] = useState([]);
 
-  const fetchCountries = async (countryId) => {
+  const fetchCountries = async () => {
     try {
       const response = await fetch("http://localhost:20002/api/countries");
       const data = await response.json();
@@ -36,6 +37,7 @@ export default function CountriesPage() {
             <TableRow>
               <TableCell>ID</TableCell>
               <TableCell>Name</TableCell>
+              <TableCell>Coordinates</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -43,6 +45,9 @@ export default function CountriesPage() {
               <TableRow key={country.id}>
                 <TableCell>{country.id}</TableCell>
                 <TableCell>{country.name}</TableCell>
+                <TableCell>
+                  {JSON.stringify(country.geom.coordinates)}
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>

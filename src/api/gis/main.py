@@ -14,7 +14,7 @@ db = Database()
 
 @app.route('/api/countries', methods=['GET'])
 def get_countries():
-    query = f'SELECT * FROM "Country";'
+    query = f'SELECT id, name, geom FROM "Country";'
     
     try:
         countries = db.selectAll(query)
@@ -23,6 +23,7 @@ def get_countries():
             country_dict = {
                 'id': country[0],
                 'name': country[1],
+                'geom': country[2],  
             }
             country_list.append(country_dict)
 
@@ -31,6 +32,7 @@ def get_countries():
     except Exception as e:
         print("Error fetching countries:", e)
         return jsonify({"error": "Error fetching countries"}), 500
+
     
 @app.route('/api/countries/<int:country_id>', methods=['PUT'])
 def update_country_coordinates(country_id):
