@@ -9,25 +9,38 @@ import {
   TableHead,
   TableRow,
   Paper,
+  Pagination,
 } from "@mui/material";
 import useApi from "../Hooks/useAPI";
 
 export default function CountriesPage() {
   const api = useApi();
   const [countries, setCountries] = useState([]);
+  const [maxDataSize, setMaxDataSize] = useState(0);
+  const [page, setPage] = useState(1);
+  const itemsPerPage = 20;
 
-  const fetchCountries = async () => {
+  const fetchCountries = async (pageNumber) => {
     try {
-      const response = await api.GET("/countries");
-      setCountries(response.data);
+      const response = await api.GET(
+        `/countries?page=${pageNumber}&pageSize=${itemsPerPage}`
+      );
+      const totalItems = response.data.totalCount;
+      setMaxDataSize(totalItems);
+      const countriesList = response.data.data;
+      setCountries(countriesList);
     } catch (error) {
       console.error("Error fetching countries:", error);
     }
   };
 
   useEffect(() => {
-    fetchCountries();
-  }, []);
+    fetchCountries(page);
+  }, [page]);
+
+  const handlePageChange = (event, value) => {
+    setPage(value);
+  };
 
   const renderCountryRows = () => {
     return countries.map((country) => (
@@ -70,6 +83,17 @@ export default function CountriesPage() {
           </TableBody>
         </Table>
       </TableContainer>
+      {maxDataSize > 0 && (
+        <Pagination
+          style={{ color: "black", marginTop: 8 }}
+          variant="outlined"
+          shape="rounded"
+          color={"primary"}
+          onChange={handlePageChange}
+          page={page}
+          count={Math.ceil(maxDataSize / itemsPerPage)}
+        />
+      )}
     </main>
   );
 }

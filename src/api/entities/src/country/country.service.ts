@@ -9,14 +9,22 @@ export class CountryService {
     this.prisma = new PrismaClient();
   }
 
-  async findAll(): Promise<any[]> {
-    return this.prisma.country.findMany();
+  async findAll(page: number = 1, pageSize: number = 20): Promise<any[]> {
+    const skip = (page - 1) * pageSize;
+    return this.prisma.country.findMany({
+      skip: skip,
+      take: 20,
+    });
   }
 
   async findOne(id: string): Promise<any> {
     return this.prisma.country.findUnique({
       where: { id: parseInt(id, 10) },
     });
+  }
+
+  async getTotalCount(): Promise<number> {
+    return this.prisma.country.count();
   }
 
   async getIDByName(name: string): Promise<number | null> {

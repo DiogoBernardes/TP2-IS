@@ -1,4 +1,3 @@
-// country.controller.ts
 import {
   Controller,
   Get,
@@ -7,16 +6,27 @@ import {
   Body,
   Put,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { CountryService } from './country.service';
+import { count } from 'console';
 
 @Controller('countries')
 export class CountryController {
   constructor(private readonly countryService: CountryService) {}
 
   @Get()
-  async findAll() {
-    return this.countryService.findAll();
+  async findAll(
+    @Query('page') page: number = 1,
+    @Query('pageSize') pageSize: number = 20,
+  ) {
+    const countries = await this.countryService.findAll(page, pageSize);
+    const totalCount = await this.countryService.getTotalCount();
+
+    return {
+      data: countries,
+      totalCount,
+    };
   }
 
   @Get(':id')
