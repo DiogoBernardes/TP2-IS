@@ -6,6 +6,7 @@ import {
   Body,
   Put,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { ModelService } from './models.service';
 
@@ -14,8 +15,17 @@ export class ModelsController {
   constructor(private readonly modelService: ModelService) {}
 
   @Get()
-  async findAll() {
-    return this.modelService.findAllModels();
+  async findAll(
+    @Query('page') page: number = 1,
+    @Query('pageSize') pageSize: number = 20,
+  ) {
+    const models = await this.modelService.findAllModels(page, pageSize);
+    const totalCount = await this.modelService.getTotalCount();
+
+    return {
+      data: models,
+      totalCount,
+    };
   }
 
   @Get(':id')

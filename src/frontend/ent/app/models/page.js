@@ -18,13 +18,18 @@ export default function ModelsPage() {
   const [models, setModels] = useState([]);
   const [maxDataSize, setMaxDataSize] = useState(0);
   const [page, setPage] = useState(1);
+  const itemsPerPage = 20;
 
   const fetchBrandInfo = async (modelId) => {
     try {
       const modelDetails = await api.GET(`/models/${modelId}`);
-      const brandDetails = await api.GET(
-        `/brands/${modelDetails.data.brand_id}`
-      );
+      const brandId = modelDetails.data.brand_id;
+
+      console.log("Model Details:", modelDetails.data);
+
+      const brandDetails = await api.GET(`/brands/${brandId}`);
+
+      console.log("Brand Details:", brandDetails.data);
 
       return {
         brandName: brandDetails.data.name,
@@ -37,19 +42,29 @@ export default function ModelsPage() {
 
   const fetchModels = async (pageNumber) => {
     try {
-      const response = await api.GET(`/models?page=${pageNumber}`);
-      setModels(response.data);
-      setMaxDataSize(response.headers["x-total-count"]);
-      const modelWithBrandName = await Promise.all(
-        response.data.map(async (row) => {
-          const { modelName, brandName } = await fetchBrandInfo(row.id);
+      const response = await api.GET(
+        `/models?page=${pageNumber}&pageSize=${itemsPerPage}`
+      );
+
+      console.log("Models Response:", response.data);
+
+      const totalItems = response.data.totalCount;
+      setMaxDataSize(totalItems);
+
+      const modelsList = response.data.data;
+      const modelsWithBrandName = await Promise.all(
+        modelsList.map(async (model) => {
+          const { modelName, brandName } = await fetchBrandInfo(model.id);
           return {
-            ...row,
+            ...model,
             brandName,
           };
         })
       );
-      setModels(modelWithBrandName);
+
+      console.log("ModelsWithBrandName:", modelsWithBrandName);
+
+      setModels(modelsWithBrandName);
     } catch (error) {
       console.error("Error fetching models:", error);
     }
@@ -112,7 +127,7 @@ export default function ModelsPage() {
           </TableBody>
         </Table>
       </TableContainer>
-      {maxDataSize && (
+      {maxDataSize > 0 && (
         <Pagination
           style={{ color: "black", marginTop: 8 }}
           variant="outlined"
@@ -120,7 +135,7 @@ export default function ModelsPage() {
           color={"primary"}
           onChange={handlePageChange}
           page={page}
-          count={Math.ceil(maxDataSize / 10)}
+          count={Math.ceil(maxDataSize / itemsPerPage)}
         />
       )}
     </main>

@@ -9,14 +9,23 @@ export class ModelService {
     this.prisma = new PrismaClient();
   }
 
-  async findAllModels(): Promise<any[]> {
-    return this.prisma.model.findMany();
+  async findAllModels(page: number = 1, pageSize: number = 1): Promise<any[]> {
+    const skip = (page - 1) * pageSize;
+
+    return this.prisma.model.findMany({
+      skip: skip,
+      take: 20,
+    });
   }
 
   async findOneModel(id: string): Promise<any> {
     return this.prisma.model.findUnique({
       where: { id: parseInt(id, 10) },
     });
+  }
+
+  async getTotalCount(): Promise<number> {
+    return this.prisma.model.count();
   }
 
   async getModelIDByName(name: string): Promise<number | null> {
