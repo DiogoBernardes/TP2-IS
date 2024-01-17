@@ -6,6 +6,9 @@ pandas==2.1.4
 flask==3.0.0
 flask-magql==1.0.0
 flask-cors
+flask_graphql
 pika
 lxml
 requests
+magql
+graphene
