@@ -6,6 +6,7 @@ import {
   Body,
   Put,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { CreditCardTypeService } from './creditCard_Type.service';
 
@@ -14,8 +15,20 @@ export class CreditCardTypeController {
   constructor(private readonly creditCardTypeService: CreditCardTypeService) {}
 
   @Get()
-  async findAll() {
-    return this.creditCardTypeService.findAll();
+  async findAll(
+    @Query('page') page: number = 1,
+    @Query('pageSize') pageSize: number = 20,
+  ) {
+    const creditCards = await this.creditCardTypeService.findAll(
+      page,
+      pageSize,
+    );
+    const totalCount = await this.creditCardTypeService.getTotalCount();
+
+    return {
+      data: creditCards,
+      totalCount,
+    };
   }
 
   @Get(':id')

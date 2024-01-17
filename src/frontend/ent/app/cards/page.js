@@ -18,12 +18,18 @@ export default function CreditCardTypesPage() {
   const [creditCardTypes, setCreditCardTypes] = useState([]);
   const [maxDataSize, setMaxDataSize] = useState(0);
   const [page, setPage] = useState(1);
+  const itemsPerPage = 20;
 
   const fetchCreditCardTypes = async (pageNumber) => {
     try {
-      const response = await api.GET(`/credit-card-types?page=${pageNumber}`);
-      setCreditCardTypes(response.data);
-      setMaxDataSize(response.headers["x-total-count"]);
+      const response = await api.GET(
+        `/credit-card-types?page=${pageNumber}&pageSize=${itemsPerPage}`
+      );
+
+      const totalItems = response.data.totalCount;
+      setMaxDataSize(totalItems);
+      const creditCardList = response.data.data;
+      setCreditCardTypes(creditCardList);
     } catch (error) {
       console.error("Error fetching credit card types:", error);
     }
@@ -78,7 +84,7 @@ export default function CreditCardTypesPage() {
           </TableBody>
         </Table>
       </TableContainer>
-      {maxDataSize && (
+      {maxDataSize > 0 && (
         <Pagination
           style={{ color: "black", marginTop: 8 }}
           variant="outlined"
@@ -86,7 +92,7 @@ export default function CreditCardTypesPage() {
           color={"primary"}
           onChange={handlePageChange}
           page={page}
-          count={Math.ceil(maxDataSize / 10)}
+          count={Math.ceil(maxDataSize / itemsPerPage)}
         />
       )}
     </main>

@@ -9,14 +9,23 @@ export class CreditCardTypeService {
     this.prisma = new PrismaClient();
   }
 
-  async findAll(): Promise<any[]> {
-    return this.prisma.creditCard_Type.findMany();
+  async findAll(page: number = 1, pageSize: number = 20): Promise<any[]> {
+    const skip = (page - 1) * pageSize;
+
+    return this.prisma.creditCard_Type.findMany({
+      skip: skip,
+      take: 20,
+    });
   }
 
   async findOne(id: string): Promise<any> {
     return this.prisma.creditCard_Type.findUnique({
       where: { id: parseInt(id, 10) },
     });
+  }
+
+  async getTotalCount(): Promise<number> {
+    return this.prisma.brand.count();
   }
 
   async getCardIdByName(name: string): Promise<number | null> {
