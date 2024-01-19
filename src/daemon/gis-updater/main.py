@@ -65,7 +65,7 @@ def callback(ch, method, properties, body):
                     update_data = {"geom": json.dumps(coordinates)}
 
                     try:
-                        response = requests.put(update_url, json=update_data)
+                        response = requests.patch(update_url, json=update_data)
                         response.raise_for_status()
                         print(f"Country: {country_name}, Coordinates: {coordinates} - Coordinates updated successfully.")
                     except requests.exceptions.RequestException as e:

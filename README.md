@@ -1,14 +1,8 @@
-
 # RPC_Server - XML_Parsing
 
 In this repository you will find a complex architecture (similar to the on in the image), this is the second part of a project that essentially was a data transformation tool, taking information from a CSV file, converting it into XML, and storing it in an PostGres database. The code ensures that the database table structure matches the data being inserted. It's particularly useful for converting structured data from one format (CSV) to another (XML and PostGres) for further analysis or use.
 
 In this second part we've added API's, another language besides Python, Golang, frontend's, and very different features to develop even more the first project.
-
-
-
-
-
 
 ## Functionalities
 
@@ -28,9 +22,6 @@ In this second part we've added API's, another language besides Python, Golang, 
 
 - The data can be viewed in the frontend's. The first one, _frontend-proc_ uses the data from the db-xml dabatabase using the rpc-server, this is done using a Flask API. The _frontend-ent_ uses the data from the db-rel also using an Flask API. The last _frontend-gis_ uses the field _geom_ in the Country table in the db-rel database, to insert pins in a world map, of the geographic position of a Customer.
 
-
-
-
 ## Running th program
 
 Create Docker Images and Containers - Navigate to the project's root folder (TP2-IS).
@@ -42,6 +33,7 @@ First we need to build the database conteiner's using the following command:
 ```
 
 Secondly the API conteiner's:
+
 ```
   docker-compose up --build api-gis api-proc api-entities api-graphql -d
 ```
@@ -49,7 +41,13 @@ Secondly the API conteiner's:
 Then we will need to build the rest of the architecture:
 
 ```
-  docker-compose up --build migrator watcher gis-updater importer -d
+  docker-compose up --build migrator watcher gis-updater -d
+```
+
+Lastly but not least, the importer, this conteiner will start the whole process:
+
+```
+  docker-compose up --build importer -d
 ```
 
 To see the complete data using a modern interface, run:
@@ -58,10 +56,12 @@ To see the complete data using a modern interface, run:
   docker-compose up --build frontend-proc frontend-gis frontend-ent -d
 ```
 
-Those commands will create and start up the enviroment we create, we hope you enjoy! 
+Those commands will create and start up the enviroment we create, we hope you enjoy!
 
 The links to acess the frontend's are in each respectivly docker conteiner.
+
 ## Stacks
+
 ![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)
 ![Flask](https://img.shields.io/badge/flask-%23000.svg?style=for-the-badge&logo=flask&logoColor=white)
 ![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
@@ -75,10 +75,12 @@ The links to acess the frontend's are in each respectivly docker conteiner.
 ![Golang](https://img.shields.io/badge/Go-00ADD8?style=for-the-badge&logo=go&logoColor=white)
 ![NestJS](https://img.shields.io/badge/nestjs-%23E0234E.svg?style=for-the-badge&logo=nestjs&logoColor=white)
 ![GraphQL](https://img.shields.io/badge/-GraphQL-E10098?style=for-the-badge&logo=graphql&logoColor=white)
+
 # Authors
+
 - [@RafaelAndré](https://github.com/kromenz) - 28234
 - [@DiogoBernardes](https://github.com/DiogoBernardes) - 27984
 - [@SérgioBarbosa](https://github.com/kromenz) - 26211
 - [GithubRepo](https://github.com/DiogoBernardes/TP2-IS)
-#### _Engenharia Informática @ipvc/estg, 2023-2024_ ####
 
+#### _Engenharia Informática @ipvc/estg, 2023-2024_

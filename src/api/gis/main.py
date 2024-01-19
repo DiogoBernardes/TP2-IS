@@ -33,19 +33,48 @@ def get_countries():
         print("Error fetching countries:", e)
         return jsonify({"error": "Error fetching countries"}), 500
 
-    
-@app.route('/api/countries/<int:country_id>', methods=['PUT'])
+@app.route('/api/customers', methods=['GET'])
+def get_all_customers():
+    try:
+        customers_query = 'SELECT id, country_id FROM "Customer";'
+        customers_data = db.selectAll(customers_query)
+
+        customer_list = []
+
+        for customer_data in customers_data:
+            customer_id = customer_data[0]
+            country_id = customer_data[1]
+
+            coordinates_query = f'SELECT geom FROM "Country" WHERE id = {country_id};'
+            coordinates = db.selectOne(coordinates_query)
+
+            if not coordinates:
+                return jsonify({"error": f"Country with ID {country_id} not found"}), 404
+
+            customer_info = {
+                "customer_id": customer_id,
+                "country_id": country_id,
+                "coordinates": coordinates[0]
+            }
+
+            customer_list.append(customer_info)
+
+        return jsonify(customer_list)
+
+    except Exception as e:
+        print("Error fetching all customers:", e)
+        return jsonify({"error": f"Error fetching all customers: {str(e)}"}), 500
+
+@app.route('/api/countries/<int:country_id>', methods=['PATCH'])
 def update_country_coordinates(country_id):
     try:
-        # Obtenha os dados do corpo da solicitação
         data = request.get_json()
 
-        # Certifique-se de que o corpo da solicitação contém o campo 'geom'
         if 'geom' not in data:
             return jsonify({"error": "Missing 'geom' field in the request body"}), 400
 
         print("Received GeoJSON:", data['geom'])
-        update_query = f'UPDATE "Country" SET geom = %s WHERE id = %s;'
+        update_query = 'UPDATE "Country" SET geom = %s WHERE id = %s;'
         db.update(update_query, (data['geom'], country_id))
 
         return jsonify({"message": f"Coordinates updated for country with ID {country_id}"}), 200
@@ -53,6 +82,7 @@ def update_country_coordinates(country_id):
     except Exception as e:
         print("Error updating coordinates:", e)
         return jsonify({"error": f"Error updating coordinates: {str(e)}"}), 500
+
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=PORT)
