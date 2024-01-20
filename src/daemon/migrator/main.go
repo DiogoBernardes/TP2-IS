@@ -19,17 +19,16 @@ import (
 )
 
 const (
-
+    //RABBIT
     rabbitMQURL         = "amqp://is:is@rabbitmq:5672/is"
     queueName           = "tasks"
     queueNameGis        = "geom"
-
+    //DB
     dbUser              = "is"
     dbPassword          = "is"
     dbName              = "is"
     dbHost		        = "db-xml"
 	port		        = "5432"
-
 	//API's
 	apiUrl 				=	"http://api-entities:8080"
 	create				=	"/create"
@@ -42,31 +41,6 @@ const (
 	customersApi		=	"/customers"
 	salesApi			=	"/sales"
 	modelsApi			=	"/models"
-
-	apiCountriesCreate	=	"http://api-entities:8080/countries/create"
-	apiCountriesDel		=	"http://api-entities:8080/countries/delete-all"
-	apiCountriesByName 	= 	"http://api-entities:8080/countries/by-name"
-
-	apiCardsCreate		=	"http://api-entities:8080/credit-card-types/create"
-	apiCardsDel			=	"http://api-entities:8080/credit-card-types/delete-all"
-
-	apiBrandsCreate		=	"http://api-entities:8080/brands/create"
-	apiBrandsDel		=	"http://api-entities:8080/brands/delete-all"
-	apiBrandsByName		=	"http://api-entities:8080/brands/by-name"	
-
-	apiModelsCreate		=	"http://api-entities:8080/models/create"
-	apiModelsDel		=	"http://api-entities:8080/models/delete-all"
-	apiModelsByName		=	"http://api-entities:8080/models/by-name"
-
-	apiCustomersCreate	=	"http://api-entities:8080/customers/create"
-	apiCustomersDel		=	"http://api-entities:8080/customers/delete-all"
-
-	apiCarsCreate		=	"http://api-entities:8080/cars/create"
-	apiCarsDel			=	"http://api-entities:8080/cars/delete-all"
-
-	apiSalesCreate		=	"http://api-entities:8080/sales/create"
-	apiSalesDel			=	"http://api-entities:8080/sales/delete-all"
-
 )
 
 // STRUCTS
@@ -231,7 +205,7 @@ func getCountryIDByName(name string) (int, error) {
 
     resp, err := resty.New().
         R().
-        Get(fmt.Sprintf("%s/%s", apiCountriesByName, name))
+        Get(fmt.Sprintf("%s/%s", apiUrl + countriesApi + byName,name))
 
     if err != nil {
     	log.Printf("Erro ao enviar solicitação para obter o ID do país pelo nome: %s\n", err)
@@ -257,7 +231,7 @@ func getModelIDByName(name string) (int, error) {
 
     resp, err := resty.New().
         R().
-        Get(fmt.Sprintf("%s/%s", apiModelsByName, name))
+        Get(fmt.Sprintf("%s/%s", apiUrl + modelsApi+ byName, name))
 
     if err != nil {
 		log.Printf("Erro ao obter o ID do modelo pelo nome: %s\n", err)
@@ -433,7 +407,7 @@ func migrateCountry(fileName string, xmlContent string) error {
 		resp, err := client.R().
 			SetHeader("Content-Type", "application/json").
 			SetBody(jsonData).
-			Post(apiCountriesCreate)
+			Post(apiUrl + countriesApi + create)
 
 		if err != nil {
 			log.Println("Erro ao enviar solicitação:", err)
@@ -487,7 +461,7 @@ func migrateCreditCard(fileName string, xmlContent string) error {
 		resp, err := client.R().
 			SetHeader("Content-Type", "application/json").
 			SetBody(jsonData).
-			Post(apiCardsCreate)
+			Post(apiUrl + cardsApi+ create)
 
 		if err != nil {
 			log.Println("Erro ao enviar solicitação:", err)
@@ -540,7 +514,7 @@ func migrateBrands(fileName string, xmlContent string) error {
         respBrand, err := client.R().
             SetHeader("Content-Type", "application/json").
             SetBody(brandJSON).
-            Post(apiBrandsCreate)
+            Post(apiUrl + brandsApi+ create)
 
         if err != nil {
             log.Println("Error sending request to create brand:", err)
@@ -555,7 +529,7 @@ func migrateBrands(fileName string, xmlContent string) error {
 
 		respBrandID, err := resty.New().
 			R().
-			Get(fmt.Sprintf("%s/%s", apiBrandsByName, brandName))
+			Get(fmt.Sprintf("%s/%s", apiUrl + brandsApi+ byName, brandName))
 
 		if err != nil {
             log.Println("Error sending request to get brand ID:", err)
@@ -610,7 +584,7 @@ func migrateModels(brand *xmlquery.Node, brandID int) error {
         respModel, err := client.R().
             SetHeader("Content-Type", "application/json").
             SetBody(modelJSON).
-            Post(apiModelsCreate)
+            Post(apiUrl + modelsApi+ create)
 
         if err != nil {
             log.Println("Error sending request to create model:", err)
@@ -698,7 +672,7 @@ func migrateCustomers(fileName string, xmlContent string) error {
             R().
             SetHeader("Content-Type", "application/json").
             SetBody(jsonData).
-            Post(apiCustomersCreate)
+            Post(apiUrl + customersApi+ create)
 
         if err != nil {
             log.Printf("Error sending request to create customer '%s %s': %s\n", firstName, lastName, err)
@@ -782,7 +756,7 @@ func migrateCars(fileName string, xmlContent string) error{
 			R().
 			SetHeader("Content-Type", "application/json").
 			SetBody(jsonData).
-			Post(apiCarsCreate)
+			Post(apiUrl + carsApi+ create)
 
 		if err != nil {
 			log.Printf("Error sending request to create car: %s\n", err)
@@ -994,42 +968,42 @@ func processMessage(body []byte) {
 	 	return
 	}
 
-	// time.Sleep(1 * time.Millisecond)
+	time.Sleep(1 * time.Millisecond)
 
-	// err = migrateCreditCard(msg.FileName, xmlContent)
-	// if err != nil {
-    // 	log.Printf("Erro ao migrar cards: %s", err)
- 	//     return
-	// }
+	err = migrateCreditCard(msg.FileName, xmlContent)
+	if err != nil {
+    	log.Printf("Erro ao migrar cards: %s", err)
+ 	    return
+	}
 
-	// time.Sleep(1 * time.Millisecond)
+	time.Sleep(1 * time.Millisecond)
 
-	// err = migrateBrands(msg.FileName, xmlContent)
-	// if err != nil {
-	//     log.Printf("Erro ao migrar marcas e modelos: %s", err)
-	//  	return
-	// }
+	err = migrateBrands(msg.FileName, xmlContent)
+	if err != nil {
+	    log.Printf("Erro ao migrar marcas e modelos: %s", err)
+	 	return
+	}
 
-	// time.Sleep(1 * time.Millisecond)
+	time.Sleep(1 * time.Millisecond)
 
-	// err = migrateCars(msg.FileName, xmlContent)
-	// if err != nil {
-	//  	log.Printf("Erro ao migrar os carros: %s", err)
-	//  	return
-	// }
+	err = migrateCars(msg.FileName, xmlContent)
+	if err != nil {
+	 	log.Printf("Erro ao migrar os carros: %s", err)
+	 	return
+	}
 
-	// time.Sleep(1 * time.Millisecond)
+	time.Sleep(1 * time.Millisecond)
 
-	// if err := loadAllModels(); err != nil {
-    //      log.Printf("Erro ao carregar modelos: %s\n", err)
-    //      return
-    // }
+	if err := loadAllModels(); err != nil {
+         log.Printf("Erro ao carregar modelos: %s\n", err)
+         return
+    }
 
-	// err = migrateSales(msg.FileName, xmlContent)
-	// if err != nil {
-	//  	log.Printf("Erro ao migrar os carros: %s", err)
-	//  	return
-	// }
+	err = migrateSales(msg.FileName, xmlContent)
+	if err != nil {
+	 	log.Printf("Erro ao migrar os carros: %s", err)
+	 	return
+	}
 
 	time.Sleep(1 * time.Millisecond)
 
