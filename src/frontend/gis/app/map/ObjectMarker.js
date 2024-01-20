@@ -7,21 +7,18 @@ import {
   ListItemText,
 } from "@mui/material";
 import FlagIcon from "@mui/icons-material/Flag";
-import PictureInPictureAltIcon from "@mui/icons-material/PictureInPictureAlt";
 import ContactsIcon from "@mui/icons-material/Contacts";
 import React from "react";
 import { Marker, Popup } from "react-leaflet";
 import { icon as leafletIcon, point } from "leaflet";
-import { CarRental } from "@mui/icons-material";
 
 const LIST_PROPERTIES = [
-  { key: "id", label: "Country", Icon: FlagIcon },
-  { key: "name", label: "Customer Name", Icon: CarRental },
+  { key: "customerCount", label: "Total Sales", Icon: ContactsIcon },
 ];
 
 export function ObjectMarker({ geoJSON }) {
   const properties = geoJSON?.properties;
-  const { id, imgUrl, name } = properties;
+  const { id, imgUrl, name, customerCount } = properties;
   const coordinates = geoJSON?.geometry?.coordinates;
 
   return (

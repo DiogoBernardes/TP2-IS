@@ -84,5 +84,24 @@ def update_country_coordinates(country_id):
         return jsonify({"error": f"Error updating coordinates: {str(e)}"}), 500
 
 
+@app.route('/api/countries/<int:country_id>/customer-count', methods=['GET'])
+def get_customer_count_by_country(country_id):
+    try:
+        country_query = f'SELECT id FROM "Country" WHERE id = {country_id};'
+        country_exists = db.selectOne(country_query)
+
+        if not country_exists:
+            return jsonify({"error": f"Country with ID {country_id} not found"}), 404
+
+        customer_count_query = f'SELECT COUNT(id) FROM "Customer" WHERE country_id = {country_id};'
+        customer_count = db.selectOne(customer_count_query)
+
+        return jsonify({"country_id": country_id, "customer_count": customer_count[0]})
+
+    except Exception as e:
+        print("Error fetching customer count by country:", e)
+        return jsonify({"error": f"Error fetching customer count by country: {str(e)}"}), 500
+
+
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=PORT)

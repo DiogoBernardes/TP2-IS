@@ -36,7 +36,20 @@ function ObjectMarkersGroup() {
       if (apiResponse && Array.isArray(apiResponse.data)) {
         const apiData = apiResponse.data;
 
-        const geomData = apiData.map((data) => {
+        // Fetch customer counts for each country
+        const customerCounts = await Promise.all(
+          apiData.map(async (country) => {
+            const customerCountResponse = await api.GET(
+              `/countries/${country.id}/customer-count`
+            );
+            return {
+              countryId: country.id,
+              customerCount: customerCountResponse.data.customer_count || 0,
+            };
+          })
+        );
+
+        const geomData = apiData.map((data, index) => {
           const countryId = data.id;
           const countryName = data.name;
           const coordinates = data.geom.coordinates;
@@ -59,8 +72,9 @@ function ObjectMarkersGroup() {
                 properties: {
                   id: countryId,
                   name: countryName,
+                  customerCount: customerCounts[index].customerCount,
                   imgUrl:
-                    "https://cdn-icons-png.flaticon.com/512/1067/1067630.png ",
+                    "https://cdn-icons-png.flaticon.com/512/1067/1067630.png",
                 },
               };
             } else {
