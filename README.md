@@ -80,7 +80,7 @@ The links to acess the frontend's are in each respectivly docker conteiner.
 
 - [@RafaelAndré](https://github.com/kromenz) - 28234
 - [@DiogoBernardes](https://github.com/DiogoBernardes) - 27984
-- [@SérgioBarbosa](https://github.com/kromenz) - 26211
+- [@SérgioBarbosa](https://github.com/Oigres2) - 26211
 - [GithubRepo](https://github.com/DiogoBernardes/TP2-IS)
 
 #### _Engenharia Informática @ipvc/estg, 2023-2024_
