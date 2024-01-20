@@ -41,8 +41,11 @@ export default function RootLayout({children}) {
             <AppBar position="fixed" sx={{zIndex: 2000}}>
                 <Toolbar sx={{backgroundColor: 'background.paper', userSelect: "none" }}>
                     <img alt={""} src={"logo512.png"} style={{height: 32, marginRight: 2 }}/>
-                    <Typography variant="h6" noWrap component="div" color="black">
+                    <Typography variant="h6" noWrap component="div" color="black" sx={{ flexGrow: 1 }}>
                         Systems Integration - GIS
+                    </Typography>
+                    <Typography variant="body2" noWrap component="div" color="black" sx={{ marginLeft: 'auto' }}>
+                        Made by: Diogo Bernardes, Sérgio Barbosa & Rafael André
                     </Typography>
                 </Toolbar>
             </AppBar>
