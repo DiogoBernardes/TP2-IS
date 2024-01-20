@@ -20,6 +20,11 @@ export default function Home() {
         </p>
         <br />
         <hr />
+        <h3>Alunos:</h3>
+        <p className={"italic"}>Diogo Bernardes Rafael André Sérgio Barbosa</p>
+        <hr />
+        <hr />
+        <h3>Docentes:</h3>
         <p className={"italic"}>Luís Teófilo & Jorge Ribeiro</p>
       </div>
     </main>

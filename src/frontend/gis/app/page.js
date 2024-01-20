@@ -17,8 +17,13 @@ export default function Home() {
                 <p>
                     The goal of this app is to visualize all the available entities that have coordinates in a map.
                 </p>
-                <br/>
-                <hr/>
+                <br />
+                <hr />
+                <h3>Alunos:</h3>
+                <p className={"italic"}>Diogo Bernardes Rafael André Sérgio Barbosa</p>
+                <hr />
+                <hr />
+                <h3>Docentes:</h3>
                 <p className={"italic"}>
                     Luís Teófilo & Jorge Ribeiro
                 </p>
