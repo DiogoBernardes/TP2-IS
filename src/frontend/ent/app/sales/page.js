@@ -18,7 +18,7 @@ export default function SalesPage() {
   const [sales, setSales] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [customerNames, setCustomerNames] = useState([]);
+  const [customerNames, setCustomerNames] = useState({});
   const [creditCardNames, setCreditCardNames] = useState([]);
   const [dataReady, setDataReady] = useState(false);
   const itemsPerPage = 20;
@@ -75,19 +75,15 @@ export default function SalesPage() {
   const updateCustomerNames = async () => {
     try {
       if (sales.length > 0) {
-        const customerIds = sales.map((row) => row.customer_id);
-        const customerNamesPromises = customerIds.map((customerId) =>
-          api.GET(`/customers/${customerId}`)
-        );
-
-        const customerResponses = await Promise.all(customerNamesPromises);
-
-        const customerNames = customerResponses.map((response) => {
+        const customerNamesMap = {};
+  
+        for (const sale of sales) {
+          const response = await api.GET(`/customers/${sale.customer_id}`);
           const customerData = response.data;
-          return `${customerData.first_name} ${customerData.last_name}`;
-        });
-
-        setCustomerNames(customerNames);
+          customerNamesMap[sale.customer_id] = `${customerData.first_name} ${customerData.last_name}`;
+        }
+  
+        setCustomerNames(customerNamesMap);
         setDataReady(true);
       }
     } catch (error) {
@@ -97,47 +93,50 @@ export default function SalesPage() {
 
   const fetchSales = async (pageNumber) => {
     try {
-      const response = await api.GET(
-        `/sales?page=${pageNumber}&pageSize=${itemsPerPage}`
-      );
+      const response = await api.GET(`/sales?page=${pageNumber}&pageSize=${itemsPerPage}`);
       const salesData = response.data.data;
 
       const customerIds = salesData.map((row) => row.customer_id);
       const creditCardIds = salesData.map((row) => row.credit_card_type_id);
 
-      const customerNames = await fetchCustomerNames(customerIds);
+      const newCustomerNames = {};
+      const customerResponses = await Promise.all(
+        customerIds.map((customerId) => api.GET(`/customers/${customerId}`))
+      );
+      customerResponses.forEach((response, index) => {
+        const { data } = response;
+        newCustomerNames[customerIds[index]] = `${data.first_name} ${data.last_name}`;
+      });
+
       const creditCardNames = await fetchCreditCardNames(creditCardIds);
 
       const salesWithAdditionalInfo = await Promise.all(
         salesData.map(async (row) => {
-          const { modelName, brandName } = await fetchModelAndBrandInfo(
-            row.car_id
-          );
+          const { modelName, brandName } = await fetchModelAndBrandInfo(row.car_id);
           return {
             ...row,
             modelName,
             brandName,
+            customerName: newCustomerNames[row.customer_id],
           };
         })
       );
 
       setCreditCardNames(creditCardNames);
       setSales(salesWithAdditionalInfo);
+      setCustomerNames(newCustomerNames); 
       setTotalPages(Math.ceil(response.data.totalCount / itemsPerPage));
 
-      updateCustomerNames();
+      setDataReady(true);
     } catch (error) {
       console.error("Error fetching sales:", error);
+      setDataReady(false);
     }
   };
 
   useEffect(() => {
     fetchSales(page);
   }, [page]);
-
-  useEffect(() => {
-    updateCustomerNames();
-  }, [sales]);
 
   const handlePageChange = (event, value) => {
     setPage(value);
@@ -187,7 +186,7 @@ export default function SalesPage() {
                 <TableCell>Car ID</TableCell>
                 <TableCell>Model</TableCell>
                 <TableCell>Brand</TableCell>
-                <TableCell>Customer</TableCell>
+                <TableCell>Customer ID</TableCell>
                 <TableCell>Customer</TableCell>
                 <TableCell>Credit Card</TableCell>
               </TableRow>
