@@ -4,6 +4,8 @@ WORKDIR /usr/src/app
 
 RUN apk add bash
 RUN npm install -g npm
+RUN npm install axios
+
 
 COPY run.sh ..
 
