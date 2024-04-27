@@ -22,6 +22,9 @@ In this second part we've added API's, another language besides Python, Golang, 
 
 - The data can be viewed in the frontend's. The first one, _frontend-proc_ uses the data from the db-xml dabatabase using the rpc-server, this is done using a Flask API. The _frontend-ent_ uses the data from the db-rel also using an Flask API. The last _frontend-gis_ uses the field _geom_ in the Country table in the db-rel database, to insert pins in a world map, of the geographic position of a Customer.
 
+## Architecture
+![Architecture](architecture.png)
+
 ## Running th program
 
 Create Docker Images and Containers - Navigate to the project's root folder (TP2-IS).
